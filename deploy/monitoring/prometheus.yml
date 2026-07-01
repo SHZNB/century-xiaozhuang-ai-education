@@ -1,0 +1,28 @@
+# 百年晓庄智慧教育平台 Prometheus 监控模板
+# 适用于 Prometheus + blackbox_exporter。上线前替换 targets 为正式域名。
+
+global:
+  scrape_interval: 30s
+  evaluation_interval: 30s
+
+rule_files:
+  - xiaozhuang-platform-alerts.yml
+
+scrape_configs:
+  - job_name: xiaozhuang-platform-health
+    metrics_path: /probe
+    params:
+      module: [http_2xx]
+    static_configs:
+      - targets:
+          - https://ai-xiaozhuang.example.edu.cn/api/health
+        labels:
+          service: century-xiaozhuang-ai-education
+          owner: cloud-ops
+    relabel_configs:
+      - source_labels: [__address__]
+        target_label: __param_target
+      - source_labels: [__param_target]
+        target_label: instance
+      - target_label: __address__
+        replacement: blackbox-exporter:9115

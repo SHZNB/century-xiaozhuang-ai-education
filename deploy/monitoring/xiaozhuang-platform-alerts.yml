@@ -1,0 +1,44 @@
+# 百年晓庄智慧教育平台 Prometheus 告警规则模板
+
+groups:
+  - name: xiaozhuang-platform-availability
+    rules:
+      - alert: XiaozhuangPlatformHealthDown
+        expr: probe_success{service="century-xiaozhuang-ai-education"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          owner: cloud-ops
+        annotations:
+          summary: 百年晓庄智慧教育平台健康检查不可用
+          description: "{{ $labels.instance }} 连续 2 分钟无法通过 /api/health 探测。请检查 systemd/Docker、Nginx、证书和 DATA_DIR 权限。"
+
+      - alert: XiaozhuangPlatformSlowHealth
+        expr: probe_duration_seconds{service="century-xiaozhuang-ai-education"} > 3
+        for: 5m
+        labels:
+          severity: warning
+          owner: cloud-ops
+        annotations:
+          summary: 百年晓庄智慧教育平台健康检查响应变慢
+          description: "{{ $labels.instance }} /api/health 探测超过 3 秒，可能存在磁盘、网络或服务端阻塞。"
+
+      - alert: XiaozhuangPlatformTlsExpiring
+        expr: probe_ssl_earliest_cert_expiry{service="century-xiaozhuang-ai-education"} - time() < 14 * 24 * 3600
+        for: 1h
+        labels:
+          severity: warning
+          owner: cloud-ops
+        annotations:
+          summary: 百年晓庄智慧教育平台 HTTPS 证书即将到期
+          description: "{{ $labels.instance }} 证书将在 14 天内到期，请及时续签并执行 nginx -t。"
+
+      - alert: XiaozhuangPlatformHealthProbeMissing
+        expr: absent(probe_success{service="century-xiaozhuang-ai-education"})
+        for: 10m
+        labels:
+          severity: warning
+          owner: cloud-ops
+        annotations:
+          summary: 百年晓庄智慧教育平台健康探测指标缺失
+          description: Prometheus 未收到平台 blackbox 健康探测指标，请检查 scrape target、blackbox_exporter 和网络访问。

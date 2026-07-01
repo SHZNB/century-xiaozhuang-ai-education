@@ -1,0 +1,121 @@
+name: Verify and deploy Pages
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: npm install
+      - run: npx playwright install --with-deps chromium
+      - run: npm run check
+      - run: npm run check:env:report
+      - run: npm run check:workflow-env:report
+      - run: npm run operations:schedule:report
+      - run: npm run permissions:report
+      - run: npm run coze:template:report
+      - run: npm run acceptance
+      - run: npm run check:deploy:report
+      - run: npm run launch:package:report
+      - run: npm test
+      - run: npm run build:pages
+      - run: npm run scan:browser-secrets
+      - run: npm run smoke:post-deploy:report
+      - run: npm run release:rehearsal
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: acceptance-report
+          path: docs/ACCEPTANCE.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: deployment-check-report
+          path: docs/DEPLOYMENT_CHECK.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: environment-config-guide
+          path: docs/ENVIRONMENT.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: workflow-environment-guide
+          path: docs/WORKFLOW_ENVIRONMENT.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: operations-schedule
+          path: docs/OPERATIONS_SCHEDULE.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: permission-matrix
+          path: docs/PERMISSIONS.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coze-links-template
+          path: |
+            docs/COZE_LINKS.md
+            docs/coze-links-template.csv
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: launch-handoff-package
+          path: docs/LAUNCH_PACKAGE.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: release-rehearsal-report
+          path: docs/RELEASE_REHEARSAL.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: post-deploy-smoke-report
+          path: docs/POST_DEPLOY_SMOKE.md
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-screenshots
+          path: screenshots/
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: verify
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - run: npm run build:pages
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: pages-dist
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,25 @@
+# 百年晓庄智慧教育平台数据目录备份模板
+# 只备份 DATA_DIR 文件：SQLite、上传证明和工作流成果。平台配置 JSON 备份仍应从后台导出并核对 manifest。
+
+[Unit]
+Description=Backup Century Xiaozhuang platform data directory
+Documentation=https://github.com/your-org/your-repo
+
+[Service]
+Type=oneshot
+User=root
+Group=root
+Environment=PLATFORM_DATA_DIR=/var/lib/xiaozhuang-platform
+Environment=PLATFORM_BACKUP_DIR=/var/backups/xiaozhuang-platform
+ExecStartPre=/usr/bin/install -d -m 0700 -o root -g root ${PLATFORM_BACKUP_DIR}
+ExecStart=/bin/sh -c 'set -eu; stamp="$(date -u +%%Y%%m%%dT%%H%%M%%SZ)"; archive="${PLATFORM_BACKUP_DIR}/xiaozhuang-data-${stamp}.tar.gz"; tar --warning=no-file-changed --one-file-system -czf "${archive}" -C "${PLATFORM_DATA_DIR}" .; sha256sum "${archive}" > "${archive}.sha256"; find "${PLATFORM_BACKUP_DIR}" -name "xiaozhuang-data-*.tar.gz" -mtime +30 -delete; find "${PLATFORM_BACKUP_DIR}" -name "xiaozhuang-data-*.tar.gz.sha256" -mtime +30 -delete'
+Nice=10
+IOSchedulingClass=best-effort
+IOSchedulingPriority=7
+PrivateTmp=true
+NoNewPrivileges=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/backups/xiaozhuang-platform
+ReadOnlyPaths=/var/lib/xiaozhuang-platform
+UMask=0077

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc" data-agent-id="agent-061">
+  <title>师范生技能训练 Logo</title>
+  <desc>师范教育 intelligent agent logo for 百年晓庄智慧教育平台</desc>
+  <rect width="128" height="128" rx="18" fill="#f5eddd"/>
+  <rect x="0" y="0" width="128" height="18" fill="#a06f20"/>
+  <rect x="10" y="24" width="108" height="94" rx="14" fill="#fffaf2" opacity=".82"/>
+  <circle cx="64" cy="58" r="31" fill="none" stroke="#a06f20" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>
+  <text x="64" y="77" text-anchor="middle" font-family="SimSun, STSong, serif" font-size="44" font-weight="800" fill="#a06f20">技</text>
+  <text x="64" y="100" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="10" font-weight="700" fill="#4a4138">师范教育</text>
+  <text x="64" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" letter-spacing="1.4" fill="#8d8174">AGENT-061</text>
+</svg>

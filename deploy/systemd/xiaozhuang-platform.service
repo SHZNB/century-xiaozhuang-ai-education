@@ -1,0 +1,39 @@
+# 百年晓庄智慧教育平台 systemd 服务模板
+# 使用前请创建 xiaozhuang 用户、部署代码到 /opt/xiaozhuang-platform，并配置 /etc/xiaozhuang-platform.env。
+
+[Unit]
+Description=Century Xiaozhuang Smart Education Platform
+Documentation=https://github.com/your-org/your-repo
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=xiaozhuang
+Group=xiaozhuang
+WorkingDirectory=/opt/xiaozhuang-platform
+Environment=NODE_ENV=production
+Environment=PORT=8080
+Environment=DATA_DIR=/var/lib/xiaozhuang-platform
+EnvironmentFile=-/etc/xiaozhuang-platform.env
+ExecStart=/usr/bin/node --env-file-if-exists=.env server/index.mjs
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGTERM
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/var/lib/xiaozhuang-platform
+StateDirectory=xiaozhuang-platform
+StateDirectoryMode=0750
+UMask=0077
+
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=xiaozhuang-platform
+
+[Install]
+WantedBy=multi-user.target

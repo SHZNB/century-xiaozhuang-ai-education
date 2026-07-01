@@ -1,0 +1,901 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="百年晓庄智慧教育平台 - 南京晓庄学院智能体应用集成门户">
+  <meta name="theme-color" content="#971728">
+  <title>百年晓庄智慧教育平台</title>
+  <link rel="icon" href="assets/njxzc-seal.png">
+  <link rel="stylesheet" href="styles.css">
+  <script src="assets/lucide.min.js" defer></script>
+  <script src="config.js?v=20260620-open-preview" defer></script>
+  <script src="app.js?v=20260620-open-preview" defer></script>
+</head>
+<body>
+  <div class="login-screen login-overlay" id="loginScreen" hidden>
+    <section class="login-story" aria-label="平台介绍">
+      <img data-brand-hero src="assets/xiaozhuang-century.png" alt="晓庄教育百年传承与智慧教育愿景">
+      <div class="login-story-overlay"></div>
+      <div class="brand brand-on-image">
+        <img class="school-mark" data-brand-logo src="assets/njxzc-seal.png" alt="">
+        <span>
+          <strong>南京晓庄学院</strong>
+          <small>百年晓庄智慧教育平台</small>
+        </span>
+      </div>
+      <div class="story-copy">
+        <p class="eyebrow">1927—2027 · 行知精神</p>
+        <h1>知行合一，智启未来</h1>
+        <p>汇聚教育智能体，让百年师范底蕴在智能时代焕发新的生命力。</p>
+      </div>
+      <p class="story-quote">“生活即教育，社会即学校，教学做合一。”</p>
+    </section>
+
+    <main class="login-panel">
+      <div class="mobile-brand">
+        <img class="school-mark" data-brand-logo src="assets/njxzc-seal.png" alt="">
+        <strong>百年晓庄智慧教育平台</strong>
+      </div>
+      <div class="login-box">
+        <p class="eyebrow">统一身份认证</p>
+        <h2>欢迎回来</h2>
+        <p class="login-lead">使用校园账号登录智慧教育应用中心</p>
+
+        <form id="loginForm">
+          <label for="username">账号</label>
+          <div class="input-wrap">
+            <i data-lucide="user-round" aria-hidden="true"></i>
+            <input id="username" name="username" autocomplete="username" placeholder="工号 / 学号" required>
+          </div>
+
+          <label for="password">密码</label>
+          <div class="input-wrap">
+            <i data-lucide="lock-keyhole" aria-hidden="true"></i>
+            <input id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码" required>
+            <button class="icon-button password-toggle" type="button" id="passwordToggle" title="显示密码" aria-label="显示密码">
+              <i data-lucide="eye" aria-hidden="true"></i>
+            </button>
+          </div>
+
+          <div class="login-options">
+            <label class="check-label"><input id="rememberMe" type="checkbox" checked> 记住登录状态</label>
+            <button class="link-button" type="button" data-toast="请联系平台管理员重置密码">忘记密码？</button>
+          </div>
+
+          <p class="form-error" id="loginError" role="alert"></p>
+          <button class="primary-button login-button" type="submit">
+            <span>登录平台</span><i data-lucide="arrow-right" aria-hidden="true"></i>
+          </button>
+        </form>
+
+        <button class="secondary-button sso-button" id="ssoLoginButton" type="button" hidden>
+          <i data-lucide="shield-check" aria-hidden="true"></i><span>学校统一身份认证登录</span>
+        </button>
+
+        <div class="login-note">
+          <i data-lucide="info" aria-hidden="true"></i>
+          <span>账号由学校管理员或统一身份认证系统发放；首次登录需修改初始密码。</span>
+        </div>
+      </div>
+      <footer>南京晓庄学院 · 百年校庆智慧教育建设项目</footer>
+    </main>
+  </div>
+
+  <section class="password-gate" id="passwordGate" role="dialog" aria-modal="true" aria-labelledby="passwordGateTitle" hidden>
+    <form class="password-card" id="passwordChangeForm">
+      <div>
+        <p class="eyebrow">账号安全</p>
+        <h2 id="passwordGateTitle">修改初始密码</h2>
+        <p>为了保护平台数据与模型额度，请先设置新的登录密码。</p>
+      </div>
+      <label>当前密码<input id="currentPassword" type="password" autocomplete="current-password" required></label>
+      <label>新密码<input id="newPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+      <label>确认新密码<input id="confirmPassword" type="password" autocomplete="new-password" minlength="8" required></label>
+      <p class="form-error" id="passwordChangeError" role="alert"></p>
+      <button class="primary-button" type="submit"><span>保存并进入平台</span><i data-lucide="shield-check"></i></button>
+    </form>
+  </section>
+
+  <div class="app-shell" id="appShell">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand sidebar-brand">
+        <img class="school-mark" data-brand-logo src="assets/njxzc-seal.png" alt="">
+        <span>
+          <strong>南京晓庄学院</strong>
+          <small>百年晓庄智慧教育平台</small>
+        </span>
+      </div>
+
+      <nav class="main-nav" aria-label="主导航">
+        <button class="nav-item active" data-view="home"><i data-lucide="layout-dashboard"></i><span>工作台</span></button>
+        <button class="nav-item nav-ai" data-view="ai"><i data-lucide="sparkles"></i><span>AI 教育助手</span><b>AI</b></button>
+        <button class="nav-item" data-view="agents"><i data-lucide="blocks"></i><span>智能体中心</span></button>
+        <button class="nav-item" data-view="favorites"><i data-lucide="star"></i><span>我的收藏</span></button>
+        <button class="nav-item" data-view="artifacts"><i data-lucide="folder-down"></i><span>成果库</span></button>
+        <button class="nav-item" data-view="history"><i data-lucide="history"></i><span>使用记录</span></button>
+        <button class="nav-item admin-nav" data-view="management"><i data-lucide="settings-2"></i><span>应用管理</span></button>
+      </nav>
+
+      <div class="sidebar-section">
+        <p>平台服务</p>
+        <button class="nav-item" data-view="alumni"><i data-lucide="badge-check"></i><span>校友认证</span></button>
+        <button class="nav-item" data-view="guide"><i data-lucide="circle-help"></i><span>使用指南</span></button>
+        <button class="nav-item" data-view="feedback"><i data-lucide="message-square-more"></i><span>意见反馈</span></button>
+      </div>
+
+      <div class="sidebar-footer">
+        <div class="century-badge">
+          <span>100</span>
+          <p>百年晓庄<br><small>1927—2027</small></p>
+        </div>
+        <button class="collapse-button icon-button" id="collapseSidebar" title="收起侧栏" aria-label="收起侧栏">
+          <i data-lucide="panel-left-close"></i>
+        </button>
+      </div>
+    </aside>
+
+    <main class="main-area">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-button mobile-menu" id="mobileMenu" title="打开导航" aria-label="打开导航"><i data-lucide="menu"></i></button>
+          <div class="global-search">
+            <i data-lucide="search" aria-hidden="true"></i>
+            <input id="globalSearch" type="search" placeholder="搜索智能体、功能或服务" aria-label="搜索智能体">
+            <kbd>Ctrl K</kbd>
+          </div>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" data-toast="暂无新通知" title="通知" aria-label="通知"><i data-lucide="bell"></i><span class="dot"></span></button>
+          <button class="user-menu" id="userMenu" aria-expanded="false">
+            <span class="avatar">陶</span>
+            <span class="user-copy"><strong>陶老师</strong><small>教师用户</small></span>
+            <i data-lucide="chevron-down"></i>
+          </button>
+          <div class="account-menu" id="accountMenu" hidden>
+            <button data-view="profile"><i data-lucide="user-cog"></i>账号设置</button>
+            <button id="logoutButton"><i data-lucide="log-out"></i>退出登录</button>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-content">
+        <section class="view active" id="view-home">
+          <div class="welcome-row">
+            <div>
+              <p class="date-line" id="dateLine"></p>
+              <h1>陶老师，上午好</h1>
+              <p>从一个智能体开始，开启今天的教学探索。</p>
+            </div>
+            <div class="weather-chip"><i data-lucide="sun"></i><span>南京 · 26℃</span></div>
+          </div>
+
+          <section class="hero-banner" data-hero-carousel>
+            <div class="hero-slides" aria-hidden="true">
+              <img class="hero-slide active" src="assets/hero-carousel/century-xiaozhuang.jpg" alt="">
+              <img class="hero-slide" src="assets/hero-carousel/library-blossom.jpg" alt="">
+              <img class="hero-slide" src="assets/hero-carousel/campus-lake.jpg" alt="">
+              <img class="hero-slide" src="assets/hero-carousel/xingzhi-statue.jpg" alt="">
+              <img class="hero-slide" src="assets/hero-carousel/century-launch.jpg" alt="">
+            </div>
+            <div class="hero-shade"></div>
+            <img class="hero-seal-gold" src="assets/gold-seal-clean.png" alt="" aria-hidden="true">
+            <img class="hero-campus-gold" src="assets/gold-campus-cutout.png" alt="" aria-hidden="true">
+            <img class="hero-gate-gold" src="assets/gold-gate-cutout.png" alt="" aria-hidden="true">
+            <img class="hero-statue-gold" src="assets/gold-statue-cutout.png" alt="" aria-hidden="true">
+            <img class="gan-watermark" src="assets/gold-gan-cutout.png" alt="" aria-hidden="true">
+            <div class="hero-copy">
+              <div class="hero-slide-kicker"><span id="heroKicker">百年晓庄 · 智慧教育</span><b id="heroCount">01 / 05</b></div>
+              <div class="official-lockup">
+                <img src="assets/gold-seal-clean.png" alt="南京晓庄学院">
+                <span><strong>南京晓庄学院</strong><small>1927-2027</small></span>
+              </div>
+              <img class="century-title-art" src="assets/gold-century-title-clean.png" alt="百年晓庄">
+              <h2 id="heroTitle">百年晓庄智慧教育平台</h2>
+              <p id="heroLead">以行知精神为底色，连接 100 个教育智能体、AI 教育聊天、校友认证与教学工作流，让备课、教案、课件、资源与课堂创新进入同一个智慧入口。</p>
+              <button class="light-button" data-view="agents">探索全部智能体 <i data-lucide="arrow-up-right"></i></button>
+            </div>
+            <div class="hero-year" aria-hidden="true"><strong>1927</strong><span>2027</span></div>
+            <div class="hero-carousel-nav" aria-label="封面轮播导航">
+              <button class="active" type="button" data-hero-index="0" data-kicker="百年晓庄 · 智慧教育" data-title="百年晓庄智慧教育平台" data-lead="以行知精神为底色，连接 100 个教育智能体、AI 教育聊天、校友认证与教学工作流，让备课、教案、课件、资源与课堂创新进入同一个智慧入口。"><span></span><strong>百年晓庄</strong><small>校庆专题与平台总入口</small></button>
+              <button type="button" data-hero-index="1" data-kicker="校园春色 · 数智课堂" data-title="从一处校园风景进入智慧教育" data-lead="以真实校园影像建立信任感，让教师、校友和预审人员一进入平台，就看见晓庄气质与可用的 AI 教育工作台。"><span></span><strong>图书馆春景</strong><small>真实校园与学习场景</small></button>
+              <button type="button" data-hero-index="2" data-kicker="水映晓庄 · 教学做合一" data-title="把教学任务放进同一个工作流" data-lead="教案、课件、题目、资源、长文档阅读和 HTML 动画统一进入平台，由模型路由自动选择最适合的智能体能力。"><span></span><strong>湖畔校园</strong><small>教学工作流一体化</small></button>
+              <button type="button" data-hero-index="3" data-kicker="行知精神 · 面向未来" data-title="以教育家精神建设 AI 教育入口" data-lead="平台围绕陶行知教育思想组织智能体能力，让 AI 服务真实课堂、教师成长、学生发展和校史传播。"><span></span><strong>行知精神</strong><small>校史底蕴与教育使命</small></button>
+              <button type="button" data-hero-index="4" data-kicker="百年新程 · 共赴荣光" data-title="连接校友、教师与智慧教育生态" data-lead="校友认证、百万 Token 权益、模型消费记录和应用治理共同构成可预审、可部署、可持续运营的 Demo 平台。"><span></span><strong>百年启动</strong><small>校友权益与平台治理</small></button>
+            </div>
+          </section>
+
+          <div class="ops-strip" aria-label="平台运行概览">
+            <div><strong>100</strong><span>教育智能体目录</span></div>
+            <div><strong>8</strong><span>主流模型自动路由</span></div>
+            <div><strong>1,000,000</strong><span>校友国产模型 Token</span></div>
+            <div><strong>30 天</strong><span>认证权益有效期</span></div>
+          </div>
+
+          <section class="home-ai-console" aria-label="AI 教育聊天机器人">
+            <aside class="home-ai-rail">
+              <div class="home-ai-brand">
+                <span><i data-lucide="bot"></i></span>
+                <div><strong>晓庄 AI</strong><small>聊天机器人</small></div>
+              </div>
+              <button class="home-ai-nav active"><i data-lucide="message-circle"></i>新聊天</button>
+              <button class="home-ai-nav"><i data-lucide="search"></i>搜索聊天</button>
+              <button class="home-ai-nav"><i data-lucide="folder-open"></i>文件库</button>
+              <button class="home-ai-nav"><i data-lucide="presentation"></i>项目成果</button>
+              <div class="home-ai-history">
+                <strong>最近</strong>
+                <button>五年级语文教案生成</button>
+                <button>陶行知校史 PPT 大纲</button>
+                <button>抛物线 HTML 动画</button>
+              </div>
+            </aside>
+            <div class="home-ai-stage">
+              <header class="home-ai-top">
+                <div>
+                  <p class="eyebrow">AI + EDUCATION</p>
+                  <h2>准备好了，随时开始</h2>
+                </div>
+                <select aria-label="选择模型">
+                  <option>自动路由 · 推荐</option>
+                  <option>Kimi · 长文本/PDF</option>
+                  <option>DeepSeek · 教案/课程设计</option>
+                  <option>ChatGPT · PPT/讲稿/HTML 演示</option>
+                  <option>Coze Workflow · 网页动画</option>
+                  <option>Gemini · 图片理解</option>
+                  <option>通义千问 / 豆包 · 中文通用</option>
+                  <option>文心一言 / 智谱 GLM · 政策知识</option>
+                </select>
+              </header>
+              <div class="home-ai-output-types" aria-label="输出类型">
+                <button><i data-lucide="file-text"></i>Word 教案</button>
+                <button><i data-lucide="presentation"></i>PPT 课件</button>
+                <button><i data-lucide="code-xml"></i>HTML 动画</button>
+                <button><i data-lucide="list-checks"></i>题目资源</button>
+              </div>
+              <div class="home-ai-composer">
+                <button class="icon-button" type="button" title="添加附件" aria-label="添加附件"><i data-lucide="plus"></i></button>
+                <input aria-label="输入问题" placeholder="有问题，尽管问。可上传文本、图片、PDF、PPT，并生成教案、课件或网页动画。">
+                <div class="home-ai-attach-types" aria-label="附件类型">
+                  <span>TXT</span><span>图片</span><span>PDF</span><span>PPT</span>
+                </div>
+                <button class="home-ai-send" type="button" title="发送" aria-label="发送"><i data-lucide="audio-lines"></i></button>
+              </div>
+            </div>
+          </section>
+
+          <div class="section-heading workflow-heading">
+            <div><p class="eyebrow">TEACHING WORKFLOWS</p><h2>今天想完成什么？</h2></div>
+            <button class="text-button" data-view="ai">进入 AI 教育助手 <i data-lucide="arrow-right"></i></button>
+          </div>
+          <div class="workflow-grid" id="workflowGrid">
+            <button class="workflow-card" data-workflow="lesson"><span><i data-lucide="notebook-pen"></i></span><strong>写教案</strong><small>目标、活动、评价一体生成</small><b>DeepSeek</b></button>
+            <button class="workflow-card" data-workflow="ppt"><span><i data-lucide="presentation"></i></span><strong>做课件</strong><small>大纲、讲稿、HTML 演示</small><b>ChatGPT</b></button>
+            <button class="workflow-card" data-workflow="quiz"><span><i data-lucide="list-checks"></i></span><strong>出题组卷</strong><small>按学段、知识点和难度生成</small><b>通义千问</b></button>
+            <button class="workflow-card" data-workflow="document"><span><i data-lucide="file-search"></i></span><strong>读长文档</strong><small>上传 PDF，提炼重点与问答</small><b>Kimi</b></button>
+            <button class="workflow-card" data-workflow="animation"><span><i data-lucide="code-xml"></i></span><strong>网页动画</strong><small>生成互动 HTML 并在线预览</small><b>Coze</b></button>
+            <button class="workflow-card" data-workflow="image"><span><i data-lucide="scan-eye"></i></span><strong>看图分析</strong><small>理解图片、图表和教学素材</small><b>Gemini</b></button>
+          </div>
+
+          <div class="section-heading">
+            <div><p class="eyebrow">SMART AGENTS</p><h2>常用智能体</h2></div>
+            <button class="text-button" data-view="agents">查看全部 <i data-lucide="arrow-right"></i></button>
+          </div>
+          <div class="agent-grid featured-grid" id="featuredAgents"></div>
+
+          <div class="dashboard-lower">
+            <section class="plain-section">
+              <div class="section-heading compact">
+                <div><p class="eyebrow">RECENT</p><h2>最近使用</h2></div>
+                <button class="text-button" data-view="history">使用记录</button>
+              </div>
+              <div class="recent-list" id="recentList"></div>
+            </section>
+            <section class="announcement">
+              <div class="section-heading compact"><div><p class="eyebrow">NOTICE</p><h2>平台动态</h2></div></div>
+              <button class="news-item" data-toast="平台首批智能体已上线">
+                <time>06-12</time><span><strong>首批教育智能体正式上线</strong><small>覆盖教学、科研、校史等场景</small></span>
+              </button>
+              <button class="news-item" data-toast="智能教育应用征集正在进行中">
+                <time>06-05</time><span><strong>智能教育应用征集启动</strong><small>欢迎师生共建晓庄智能体生态</small></span>
+              </button>
+            </section>
+          </div>
+        </section>
+
+        <section class="view ai-view" id="view-ai">
+          <div class="ai-layout">
+            <aside class="conversation-panel">
+              <button class="primary-button new-chat-button" id="newChat"><i data-lucide="square-pen"></i>新建对话</button>
+              <div class="conversation-search"><i data-lucide="search"></i><input id="conversationSearch" placeholder="搜索历史对话"></div>
+              <p class="panel-label">最近对话</p>
+              <div class="conversation-list" id="conversationList"></div>
+              <div class="quota-mini">
+                <div><span>国产模型额度</span><strong id="quotaMiniValue">1,000,000</strong></div>
+                <div class="quota-track"><span id="quotaMiniBar"></span></div>
+                <small>认证校友权益 · 30 天有效</small>
+              </div>
+            </aside>
+
+            <section class="education-chat">
+              <header class="chat-header">
+                <div>
+                  <p class="eyebrow">XIAOZHUANG AI FOR EDUCATION</p>
+                  <h1 id="aiConversationTitle">人工智能＋教育</h1>
+                </div>
+                <div class="service-status"><span></span>模型网关待连接</div>
+              </header>
+              <div class="ai-messages" id="aiMessages">
+                <div class="ai-welcome">
+                  <span class="ai-welcome-mark"><i data-lucide="sparkles"></i></span>
+                  <h2>陶老师，今天一起做点什么？</h2>
+                  <p>描述教学任务即可。平台会判断意图，并自动调用更擅长的模型。</p>
+                  <div class="ai-suggestions">
+                    <button data-ai-prompt="为小学五年级设计一节《圆明园的毁灭》教学课，包含目标、活动和评价">设计一节完整教案</button>
+                    <button data-ai-prompt="制作一份关于陶行知生活教育理论的12页课堂演示">制作课堂演示</button>
+                    <button data-ai-prompt="生成一个展示抛物线运动的互动HTML网页动画">生成互动网页动画</button>
+                    <button data-ai-prompt="帮我分析上传的PDF，并整理核心观点与可引用内容">阅读并分析 PDF</button>
+                  </div>
+                </div>
+              </div>
+              <div class="artifact-panel" id="artifactPanel" hidden>
+                <header><strong id="artifactTitle">生成成果</strong><span><button class="icon-button" id="previewArtifact" title="预览"><i data-lucide="play"></i></button><button class="icon-button" id="downloadArtifact" title="下载"><i data-lucide="download"></i></button></span></header>
+                <div id="artifactContent"></div>
+              </div>
+              <form class="ai-composer" id="aiComposer">
+                <div class="attachment-list" id="attachmentList"></div>
+                <textarea id="aiInput" rows="2" placeholder="输入教学问题，或上传 PDF、图片…" required></textarea>
+                <div class="composer-actions">
+                  <div>
+                    <button class="icon-button" id="attachFile" type="button" title="上传 PDF 或图片"><i data-lucide="paperclip"></i></button>
+                    <input id="aiFileInput" type="file" accept=".pdf,image/png,image/jpeg,image/webp" multiple hidden>
+                    <span class="auto-route-hint"><i data-lucide="route"></i>自动选择最合适的模型</span>
+                  </div>
+                  <button class="primary-button send-ai-button" type="submit"><span>发送</span><i data-lucide="arrow-up"></i></button>
+                </div>
+              </form>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="view-alumni">
+          <div class="page-heading">
+            <div><p class="eyebrow">ALUMNI BENEFITS</p><h1>晓庄校友认证</h1><p>认证校友可获赠 1,000,000 国产模型 Token，审核通过后 30 天内有效。</p></div>
+            <span class="alumni-status pending" id="alumniStatus"><i data-lucide="clock-3"></i>未认证</span>
+          </div>
+          <div class="alumni-layout">
+            <section class="alumni-benefit">
+              <p class="eyebrow">校友专属权益</p>
+              <strong>1,000,000</strong>
+              <h2>国产模型 Token</h2>
+              <p>适用于 Kimi、DeepSeek、通义千问、豆包、智谱 GLM、文心一言和腾讯混元。</p>
+              <div class="benefit-rule"><span>发放方式</span><b>认证后一次性到账</b></div>
+              <div class="benefit-rule"><span>有效期限</span><b>审核通过后 30 天</b></div>
+              <div class="benefit-rule"><span>海外模型</span><b>独立额度或兑换</b></div>
+            </section>
+            <form class="alumni-form" id="alumniForm">
+              <div class="form-intro"><span>01</span><div><h2>提交校友信息</h2><p>已接入校友会接口时自动核验；未接入或未匹配时由工作人员人工审核。</p></div></div>
+              <div class="form-grid">
+                <label>姓名<input name="name" required placeholder="请输入真实姓名"></label>
+                <label>毕业年份<input name="graduationYear" type="number" min="1927" max="2030" required placeholder="例如：2012"></label>
+                <label>院系<input name="college" required placeholder="毕业时所在院系"></label>
+                <label>专业<input name="major" required placeholder="所学专业"></label>
+                <label>联系电话<input name="phone" required inputmode="tel" placeholder="用于审核联系"></label>
+                <label>电子邮箱<input name="email" type="email" required placeholder="name@example.com"></label>
+              </div>
+              <label class="proof-upload">校友证明
+                <input id="alumniProof" name="proof" type="file" accept="image/png,image/jpeg,application/pdf" required>
+                <span><i data-lucide="upload-cloud"></i><b>上传毕业证、校友证或其他证明</b><small>支持 JPG、PNG、PDF，单个文件不超过 10MB</small></span>
+              </label>
+              <label class="check-label alumni-consent"><input type="checkbox" required> 我同意将以上资料仅用于南京晓庄学院校友身份核验</label>
+              <button class="primary-button" type="submit"><i data-lucide="badge-check"></i>提交认证申请</button>
+            </form>
+          </div>
+          <section class="token-ledger">
+            <div class="section-heading compact"><div><p class="eyebrow">TOKEN LEDGER</p><h2>额度与消费记录</h2></div><span>国产模型免费额度不适用于 ChatGPT、Gemini</span></div>
+            <div id="tokenLedger"></div>
+          </section>
+        </section>
+
+        <section class="view" id="view-agents">
+          <div class="page-heading">
+            <div><p class="eyebrow">APPLICATION CENTER</p><h1>智能体中心</h1><p>汇聚校园智慧应用，为教学、学习、科研与管理提供支持。</p></div>
+            <span class="agent-count" id="agentCount"></span>
+          </div>
+          <div class="filter-row" id="categoryFilters"></div>
+          <div class="agent-grid all-agents" id="allAgents"></div>
+          <div class="empty-state" id="agentEmpty" hidden><i data-lucide="search-x"></i><h3>没有找到相关智能体</h3><p>换一个关键词或分类试试看。</p></div>
+        </section>
+
+        <section class="view" id="view-favorites">
+          <div class="page-heading"><div><p class="eyebrow">MY COLLECTION</p><h1>我的收藏</h1><p>快速回到你常用的智慧教育工具。</p></div></div>
+          <div class="agent-grid all-agents" id="favoriteAgents"></div>
+          <div class="empty-state" id="favoriteEmpty" hidden><i data-lucide="star"></i><h3>还没有收藏</h3><p>在智能体卡片上点亮星标，即可在这里快速访问。</p></div>
+        </section>
+
+        <section class="view" id="view-artifacts">
+          <div class="page-heading"><div><p class="eyebrow">ARTIFACT LIBRARY</p><h1>成果库</h1><p>沉淀教案、课件、题目、长文档摘要和网页动画成果。</p></div><div class="inline-actions"><button class="secondary-button" id="exportArtifacts" type="button" data-super-only><i data-lucide="download"></i>导出清单</button><button class="secondary-button" id="cleanupArtifacts" type="button" data-super-only><i data-lucide="archive-x"></i>清理旧成果</button></div></div>
+          <div class="artifact-toolbar">
+            <div class="global-search artifact-search">
+              <i data-lucide="search"></i>
+              <input id="artifactSearch" type="search" placeholder="搜索标题、工作流或创建人" aria-label="搜索成果">
+            </div>
+            <select id="artifactTypeFilter" aria-label="按成果类型筛选">
+              <option value="all">全部类型</option>
+              <option value="html">HTML</option>
+              <option value="zip">ZIP</option>
+            </select>
+            <select id="artifactWorkflowFilter" aria-label="按工作流筛选">
+              <option value="all">全部工作流</option>
+            </select>
+            <label class="check-control"><input id="selectVisibleArtifacts" type="checkbox"><span>全选当前</span></label>
+            <button class="secondary-button danger-button" id="bulkDeleteArtifacts" type="button"><i data-lucide="trash-2"></i>删除已选</button>
+            <span id="artifactResultCount">0 / 0 个成果</span>
+          </div>
+          <div class="artifact-governance" id="artifactGovernance"></div>
+          <div class="artifact-library" id="artifactLibrary"></div>
+        </section>
+
+        <section class="view" id="view-history">
+          <div class="page-heading"><div><p class="eyebrow">ACTIVITY</p><h1>使用记录</h1><p>查看最近打开过的智能体应用。</p></div><button class="secondary-button" id="clearHistory"><i data-lucide="trash-2"></i>清空记录</button></div>
+          <div class="history-table" id="historyTable"></div>
+        </section>
+
+        <section class="view" id="view-management">
+          <div class="page-heading management-heading">
+            <div>
+              <p class="eyebrow">AGENT OPERATIONS</p>
+              <h1>智能体应用管理</h1>
+              <p>维护应用目录、接入方式、发布状态和品牌标识。</p>
+            </div>
+            <div class="management-actions">
+              <button class="secondary-button" id="importAgents"><i data-lucide="upload"></i>导入</button>
+              <button class="secondary-button" id="importCozeLinks"><i data-lucide="link"></i>Coze 链接</button>
+              <button class="secondary-button" id="exportCozeTemplate"><i data-lucide="file-spreadsheet"></i>Coze 模板</button>
+              <button class="secondary-button" id="exportAgentQuality" data-super-only title="导出智能体目录质量整改台账"><i data-lucide="clipboard-check"></i>质量台账</button>
+              <button class="secondary-button" id="exportVisibleAgents" title="只导出当前筛选和排序后的可见智能体"><i data-lucide="list-filter"></i>导出当前</button>
+              <button class="secondary-button" id="exportAgents" title="优先导出已勾选，其次导出当前筛选结果"><i data-lucide="download"></i>导出</button>
+              <button class="secondary-button" id="backupPlatform" data-super-only><i data-lucide="database-backup"></i>备份</button>
+              <button class="secondary-button" id="restorePlatform" data-super-only><i data-lucide="database-zap"></i>恢复</button>
+              <button class="secondary-button" id="runMaintenance" data-super-only><i data-lucide="wrench"></i>运行维护</button>
+              <button class="secondary-button" id="resetCatalog" data-super-only><i data-lucide="rotate-ccw"></i>默认目录</button>
+              <button class="primary-button" id="createAgent"><i data-lucide="plus"></i>新建智能体</button>
+              <input id="importFile" type="file" accept="application/json" hidden>
+              <input id="cozeLinksFile" type="file" accept=".json,.csv,application/json,text/csv" hidden>
+              <input id="restoreFile" type="file" accept="application/json" hidden>
+            </div>
+          </div>
+          <div class="management-stats" id="managementStats"></div>
+          <div class="agent-governance" id="agentGovernance"></div>
+          <div class="management-toolbar">
+            <div class="global-search management-search">
+              <i data-lucide="search"></i>
+              <input id="managementSearch" type="search" placeholder="搜索名称、分类或负责人">
+            </div>
+            <select id="managementStatus" aria-label="按状态筛选">
+              <option value="all">全部状态</option>
+              <option value="published">已发布</option>
+              <option value="draft">草稿</option>
+              <option value="offline">已下架</option>
+            </select>
+            <select id="managementQuality" aria-label="按目录质量筛选">
+              <option value="all">全部目录质量</option>
+              <option value="ready">目录达标</option>
+              <option value="needs_attention">待补资料</option>
+            </select>
+            <select id="managementTestStatus" aria-label="按测试状态筛选">
+              <option value="all">全部测试状态</option>
+              <option value="passed">已通过</option>
+              <option value="untested">未测试</option>
+              <option value="failed">测试失败</option>
+              <option value="blocked">发布受阻</option>
+            </select>
+            <select id="managementSort" aria-label="智能体排序">
+              <option value="id-asc">默认顺序</option>
+              <option value="name-asc">名称 A-Z</option>
+              <option value="category-asc">分类优先</option>
+              <option value="status-asc">状态优先</option>
+              <option value="route-asc">模型路由</option>
+              <option value="test-asc">测试状态</option>
+            </select>
+            <div class="bulk-actions" aria-label="批量操作">
+              <label class="check-control"><input id="selectVisibleAgents" type="checkbox"><span>全选当前</span></label>
+              <button class="secondary-button" data-bulk-agent-status="published"><i data-lucide="circle-play"></i>发布</button>
+              <button class="secondary-button" data-bulk-agent-status="draft"><i data-lucide="file-pen-line"></i>转草稿</button>
+              <button class="secondary-button" data-bulk-agent-status="offline"><i data-lucide="circle-pause"></i>下架</button>
+              <select id="bulkRouteHint" aria-label="批量设置模型">
+                <option value="deepseek">DeepSeek</option>
+                <option value="kimi">Kimi</option>
+                <option value="chatgpt">ChatGPT</option>
+                <option value="coze">Coze</option>
+                <option value="gemini">Gemini</option>
+                <option value="qwen">通义千问</option>
+                <option value="ernie">文心一言</option>
+              </select>
+              <button class="secondary-button" id="bulkRouteButton"><i data-lucide="route"></i>设模型</button>
+              <button class="secondary-button" id="bulkAgentTestButton" type="button"><i data-lucide="flask-conical"></i>测试已选</button>
+              <span id="selectedAgentCount">0 已选</span>
+            </div>
+          </div>
+          <div class="management-table" id="managementTable"></div>
+          <section class="operations-panel workflow-ops">
+            <div class="section-heading compact">
+              <div><p class="eyebrow">TEACHING WORKFLOWS</p><h2>教学工作流管理</h2></div>
+              <div class="inline-actions">
+                <span id="workflowCount">0 个流程</span>
+                <button class="text-button" id="createWorkflow" type="button"><i data-lucide="plus"></i>新建</button>
+                <button class="text-button" id="importWorkflows" type="button" title="可选择合并或替换当前工作流"><i data-lucide="upload"></i>导入</button>
+                <button class="text-button" id="exportWorkflowQuality" data-super-only type="button" title="导出教学工作流质量台账"><i data-lucide="clipboard-check"></i>流程台账</button>
+                <button class="text-button" id="exportVisibleWorkflows" type="button" title="导出当前检索和排序后的可见工作流"><i data-lucide="list-filter"></i>导出当前</button>
+                <button class="text-button" id="exportWorkflows" type="button"><i data-lucide="download"></i>导出</button>
+              </div>
+              <input id="workflowImportFile" type="file" accept="application/json" hidden>
+            </div>
+            <div class="bulk-actions workflow-bulk-actions" aria-label="工作流批量操作">
+              <label class="check-control"><input id="selectVisibleWorkflows" type="checkbox"><span>全选工作流</span></label>
+              <div class="global-search workflow-search">
+                <i data-lucide="search"></i>
+                <input id="workflowSearch" type="search" placeholder="搜索工作流、摘要、模型或成果类型" aria-label="搜索教学工作流">
+              </div>
+              <select id="workflowTestStatus" aria-label="按工作流测试状态筛选">
+                <option value="all">全部测试状态</option>
+                <option value="passed">已通过</option>
+                <option value="untested">未测试</option>
+                <option value="failed">测试失败</option>
+                <option value="blocked">发布受阻</option>
+              </select>
+              <select id="workflowQuality" aria-label="按工作流质量筛选">
+                <option value="all">全部流程质量</option>
+                <option value="ready">流程达标</option>
+                <option value="needs_attention">待补流程</option>
+              </select>
+              <select id="workflowSort" aria-label="教学工作流排序">
+                <option value="id-asc">默认顺序</option>
+                <option value="title-asc">名称 A-Z</option>
+                <option value="route-asc">模型路由</option>
+                <option value="artifact-asc">成果类型</option>
+                <option value="status-asc">发布状态</option>
+                <option value="test-asc">测试状态</option>
+              </select>
+              <select id="bulkWorkflowRoute" aria-label="批量设置工作流模型">
+                <option value="deepseek">DeepSeek</option>
+                <option value="kimi">Kimi</option>
+                <option value="chatgpt">ChatGPT</option>
+                <option value="coze">Coze</option>
+                <option value="gemini">Gemini</option>
+                <option value="qwen">通义千问</option>
+                <option value="ernie">文心一言</option>
+              </select>
+              <button class="secondary-button" id="bulkWorkflowRouteButton" type="button"><i data-lucide="route"></i>设模型</button>
+              <button class="secondary-button" id="bulkWorkflowTestButton" type="button"><i data-lucide="flask-conical"></i>测试已选</button>
+              <span id="selectedWorkflowCount">0 已选</span>
+            </div>
+            <div class="workflow-governance" id="workflowGovernance"></div>
+            <div class="workflow-management" id="workflowManagement"></div>
+          </section>
+          <div class="operations-grid">
+            <section class="operations-panel" data-super-only>
+              <div class="section-heading compact"><div><p class="eyebrow">ACCOUNTS</p><h2>账号与角色</h2></div><div class="inline-actions"><button class="text-button" id="exportUsers" type="button"><i data-lucide="download"></i>导出台账</button><button class="text-button" id="createUser" type="button"><i data-lucide="user-plus"></i>新建</button></div></div>
+              <div class="user-toolbar">
+                <div class="global-search user-search">
+                  <i data-lucide="search"></i>
+                  <input id="userSearch" type="search" placeholder="搜索账号、姓名、部门或认证来源" aria-label="搜索账号">
+                </div>
+                <select id="userRoleFilter" aria-label="按账号角色筛选">
+                  <option value="all">全部角色</option>
+                  <option value="super_admin">超级管理员</option>
+                  <option value="agent_admin">应用管理员</option>
+                  <option value="alumni_reviewer">校友审核员</option>
+                  <option value="teacher">教师用户</option>
+                </select>
+                <select id="userStatusFilter" aria-label="按账号状态筛选">
+                  <option value="all">全部状态</option>
+                  <option value="active">启用</option>
+                  <option value="disabled">已停用</option>
+                </select>
+                <span id="userResultCount">0 个</span>
+              </div>
+              <div class="user-governance" id="userGovernance"></div>
+              <div class="user-management" id="userManagement"></div>
+            </section>
+            <section class="operations-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">USAGE METRICS</p><h2>运行统计</h2></div><div class="inline-actions"><select class="metric-window-select" id="metricsWindow" aria-label="选择运行统计周期"><option value="7">近 7 天</option><option value="30">近 30 天</option><option value="90">近 90 天</option></select><button class="text-button" id="exportTokenLedger" type="button" data-super-only><i data-lucide="download"></i>导出账本</button></div></div>
+              <div class="metrics-list" id="metricsList"></div>
+            </section>
+            <section class="operations-panel" data-super-only>
+              <div class="section-heading compact"><div><p class="eyebrow">TOKEN ADJUSTMENT</p><h2>额度人工调整</h2></div><span>写入审计</span></div>
+              <form class="token-adjustment-form" id="tokenAdjustmentForm">
+                <label>用户<select id="tokenAdjustUser" name="userId" required></select></label>
+                <label>额度变化<input id="tokenAdjustAmount" name="amount" type="number" step="1" min="-1000000" max="1000000" placeholder="正数补发，负数扣减" required></label>
+                <label class="wide">原因<input id="tokenAdjustReason" name="reason" maxlength="120" placeholder="例如：误扣补偿、活动额度、人工纠偏" required></label>
+                <button class="secondary-button wide" type="submit"><i data-lucide="badge-plus"></i>提交调整</button>
+              </form>
+            </section>
+            <section class="operations-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">MODEL RUNS</p><h2>模型调用台账</h2></div><button class="text-button" id="exportModelRuns" type="button" data-super-only><i data-lucide="download"></i>导出调用</button></div>
+              <div class="model-run-toolbar">
+                <div class="global-search model-run-search">
+                  <i data-lucide="search"></i>
+                  <input id="modelRunSearch" type="search" placeholder="搜索工作流、智能体、模型或用户" aria-label="搜索模型调用">
+                </div>
+                <select id="modelRunStatusFilter" aria-label="按调用状态筛选">
+                  <option value="all">全部状态</option>
+                  <option value="success">成功</option>
+                  <option value="failed">失败</option>
+                </select>
+                <select id="modelRunRouteFilter" aria-label="按模型路由筛选">
+                  <option value="all">全部路由</option>
+                </select>
+                <span id="modelRunResultCount">0 / 0 条</span>
+              </div>
+              <div class="model-run-governance" id="modelRunGovernance"></div>
+              <div class="model-run-list" id="modelRunList"></div>
+            </section>
+            <section class="operations-panel readiness-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">LAUNCH READINESS</p><h2>上线自检</h2></div><div class="inline-actions"><span id="readinessSummary">等待检测</span><button class="text-button" id="exportVersionHistory" type="button" data-super-only><i data-lucide="history"></i>版本台账</button><button class="text-button" id="exportReadiness" type="button"><i data-lucide="download"></i>导出当前</button></div></div>
+              <div class="readiness-toolbar">
+                <input id="readinessSearch" class="readiness-search" type="search" placeholder="搜索配置项、责任方、分组或说明">
+                <select id="readinessLevelFilter" aria-label="上线自检状态筛选">
+                  <option value="all">全部状态</option>
+                  <option value="fail">只看阻断</option>
+                  <option value="warn">只看提醒</option>
+                  <option value="ok">只看通过</option>
+                </select>
+                <select id="readinessOwnerFilter" aria-label="按上线责任方筛选">
+                  <option value="all">全部责任方</option>
+                </select>
+                <span id="readinessResultCount">0 项</span>
+              </div>
+              <div class="readiness-list" id="readinessList"></div>
+            </section>
+            <section class="operations-panel branding-panel" data-super-only>
+              <div class="section-heading compact"><div><p class="eyebrow">BRAND ASSETS</p><h2>品牌素材配置</h2></div><span>校方授权后切换</span></div>
+              <form class="branding-form" id="brandingForm">
+                <label>平台名称<input name="platformName" maxlength="40"></label>
+                <label>学校名称<input name="schoolName" maxlength="40"></label>
+                <label>校徽地址<input name="logoUrl" placeholder="assets/njxzc-seal.png 或 https://..."></label>
+                <label>主视觉地址<input name="heroImageUrl" placeholder="assets/xiaozhuang-century.png 或 https://..."></label>
+                <label>晓庄红<input name="primaryColor" type="color"></label>
+                <label>校庆金<input name="goldColor" type="color"></label>
+                <label>素材状态<select name="assetStatus"><option value="placeholder">开发占位</option><option value="pending">待授权确认</option><option value="official">校方授权正式素材</option></select></label>
+                <label class="wide">授权说明<textarea name="authorizationNote" maxlength="240"></textarea></label>
+                <button class="secondary-button wide" type="submit"><i data-lucide="save"></i>保存品牌配置</button>
+              </form>
+            </section>
+            <section class="operations-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">MODEL ROUTING</p><h2>模型路由状态</h2></div><div class="inline-actions"><span>密钥仅由服务端保存</span><button class="text-button" id="exportProviders" type="button" data-super-only><i data-lucide="download"></i>导出配置</button><button class="text-button" id="bulkProviderTest" type="button"><i data-lucide="flask-conical"></i>测试已配置</button></div></div>
+              <div class="provider-toolbar">
+                <div class="global-search provider-search">
+                  <i data-lucide="search"></i>
+                  <input id="providerSearch" type="search" placeholder="搜索模型、能力或服务商" aria-label="搜索模型路由状态">
+                </div>
+                <select id="providerConfigFilter" aria-label="按模型配置状态筛选">
+                  <option value="all">全部配置</option>
+                  <option value="configured">已配置</option>
+                  <option value="missing">未配置</option>
+                </select>
+                <select id="providerTypeFilter" aria-label="按模型类型筛选">
+                  <option value="all">全部模型</option>
+                  <option value="domestic">国产模型</option>
+                  <option value="international">国际模型</option>
+                </select>
+                <span id="providerResultCount">0 家</span>
+              </div>
+              <div class="provider-governance" id="providerGovernance"></div>
+              <div class="provider-list" id="providerList"></div>
+            </section>
+            <section class="operations-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">ALUMNI REVIEW</p><h2>校友认证审核</h2></div><div class="inline-actions"><span id="reviewCount">0 项待处理</span><button class="text-button" id="exportAlumni" type="button" data-super-only><i data-lucide="download"></i>导出认证</button></div></div>
+              <div class="alumni-review-toolbar">
+                <div class="global-search alumni-review-search">
+                  <i data-lucide="search"></i>
+                  <input id="alumniReviewSearch" type="search" placeholder="搜索姓名、年份、院系、专业或联系方式" aria-label="搜索校友认证">
+                </div>
+                <select id="alumniReviewStatus" aria-label="按校友认证状态筛选">
+                  <option value="pending">待审核</option>
+                  <option value="all">全部状态</option>
+                  <option value="approved">已通过</option>
+                  <option value="rejected">已退回</option>
+                </select>
+                <span id="alumniReviewResultCount">0 / 0 条</span>
+              </div>
+              <div class="alumni-review-governance" id="alumniReviewGovernance"></div>
+              <div id="alumniReview"></div>
+            </section>
+            <section class="operations-panel audit-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">AUDIT LOGS</p><h2>审计日志</h2></div><button class="text-button" id="exportAuditLogs" type="button" data-super-only><i data-lucide="download"></i>导出日志</button></div>
+              <div class="audit-toolbar">
+                <div class="global-search audit-search">
+                  <i data-lucide="search"></i>
+                  <input id="auditSearch" type="search" placeholder="搜索动作、对象、操作者或元数据" aria-label="搜索审计日志">
+                </div>
+                <select id="auditActionFilter" aria-label="按审计动作筛选">
+                  <option value="all">全部动作</option>
+                </select>
+                <span id="auditResultCount">0 / 0 条</span>
+              </div>
+              <div class="audit-governance" id="auditGovernance"></div>
+              <div class="audit-list" id="auditLogList"></div>
+            </section>
+            <section class="operations-panel feedback-panel">
+              <div class="section-heading compact"><div><p class="eyebrow">FEEDBACK QUEUE</p><h2>反馈处理</h2></div><button class="text-button" id="exportFeedback" type="button" data-super-only><i data-lucide="download"></i>导出反馈</button></div>
+              <div class="feedback-toolbar">
+                <div class="global-search feedback-search">
+                  <i data-lucide="search"></i>
+                  <input id="feedbackSearch" type="search" placeholder="搜索内容、邮箱、处理人或备注" aria-label="搜索反馈">
+                </div>
+                <select id="feedbackStatusFilter" aria-label="按反馈状态筛选">
+                  <option value="all">全部状态</option>
+                  <option value="open">待处理</option>
+                  <option value="triaged">处理中</option>
+                  <option value="closed">已关闭</option>
+                </select>
+                <select id="feedbackTypeFilter" aria-label="按反馈类型筛选">
+                  <option value="all">全部类型</option>
+                </select>
+                <span id="feedbackResultCount">0 / 0 条</span>
+              </div>
+              <div class="feedback-governance" id="feedbackGovernance"></div>
+              <div class="feedback-list" id="feedbackManagement"></div>
+            </section>
+          </div>
+        </section>
+
+        <section class="view" id="view-guide">
+          <div class="page-heading"><div><p class="eyebrow">QUICK START</p><h1>使用指南</h1><p>三步开始使用百年晓庄智慧教育平台。</p></div></div>
+          <div class="guide-steps">
+            <article><span>01</span><i data-lucide="search"></i><h2>发现应用</h2><p>通过搜索或分类筛选，找到适合当前任务的智能体。</p></article>
+            <article><span>02</span><i data-lucide="mouse-pointer-click"></i><h2>打开智能体</h2><p>点击“立即使用”，在平台工作区内开始对话或前往独立应用。</p></article>
+            <article><span>03</span><i data-lucide="bookmark-check"></i><h2>沉淀经验</h2><p>收藏常用应用，并通过使用记录快速回顾工作轨迹。</p></article>
+          </div>
+        </section>
+
+        <section class="view" id="view-feedback">
+          <div class="page-heading"><div><p class="eyebrow">FEEDBACK</p><h1>意见反馈</h1><p>你的建议将帮助平台持续成长。</p></div></div>
+          <form class="settings-form feedback-form" id="feedbackForm">
+            <label>反馈类型<select name="type"><option>功能建议</option><option>使用问题</option><option>智能体接入</option><option>其他</option></select></label>
+            <label>反馈内容<textarea name="content" required placeholder="请描述你遇到的问题或建议"></textarea></label>
+            <label>联系邮箱<input name="email" type="email" value="teacher@njxzc.edu.cn"></label>
+            <button class="primary-button" type="submit"><i data-lucide="send"></i>提交反馈</button>
+          </form>
+        </section>
+
+        <section class="view" id="view-profile">
+          <div class="page-heading"><div><p class="eyebrow">ACCOUNT</p><h1>账号设置</h1><p>管理个人资料和平台偏好。</p></div></div>
+          <form class="settings-form" id="profileForm">
+            <div class="profile-summary"><span class="avatar large">陶</span><div><strong>陶老师</strong><p>教师用户 · 教师教育学院</p></div><button class="secondary-button" type="button" data-toast="头像上传功能将在正式版开放">更换头像</button></div>
+            <div class="form-grid">
+              <label>姓名<input value="陶老师"></label>
+              <label>工号<input value="XZ2026001" disabled></label>
+              <label>所属部门<input value="教师教育学院"></label>
+              <label>电子邮箱<input type="email" value="teacher@njxzc.edu.cn"></label>
+            </div>
+            <button class="primary-button" type="submit"><i data-lucide="save"></i>保存修改</button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <div class="agent-workspace" id="agentWorkspace" role="dialog" aria-modal="true" aria-labelledby="workspaceTitle" hidden>
+    <header>
+      <div class="workspace-agent">
+        <span class="agent-icon" id="workspaceIcon"></span>
+        <div><small>智能体工作区</small><h2 id="workspaceTitle"></h2></div>
+      </div>
+      <div class="workspace-actions">
+        <button class="icon-button" id="externalAgent" title="在新窗口打开" aria-label="在新窗口打开"><i data-lucide="external-link"></i></button>
+        <button class="icon-button" id="closeWorkspace" title="关闭" aria-label="关闭"><i data-lucide="x"></i></button>
+      </div>
+    </header>
+    <div class="workspace-body">
+      <div class="workspace-welcome" id="workspaceWelcome"></div>
+      <div class="chat-stream" id="chatStream"></div>
+    </div>
+    <form class="chat-form" id="chatForm">
+      <textarea id="chatInput" rows="1" placeholder="输入你的问题，按 Enter 发送" required></textarea>
+      <button class="primary-button icon-only" type="submit" title="发送" aria-label="发送"><i data-lucide="send"></i></button>
+    </form>
+  </div>
+
+  <div class="editor-backdrop" id="editorBackdrop" hidden></div>
+  <section class="agent-editor" id="agentEditor" role="dialog" aria-modal="true" aria-labelledby="editorTitle" hidden>
+    <header>
+      <div>
+        <p class="eyebrow">AGENT BUILDER</p>
+        <h2 id="editorTitle">新建智能体</h2>
+      </div>
+      <button class="icon-button" id="closeEditor" type="button" aria-label="关闭编辑器"><i data-lucide="x"></i></button>
+    </header>
+    <form id="agentForm">
+      <input id="agentId" name="id" type="hidden">
+      <div class="editor-grid">
+        <div class="editor-main">
+          <section class="editor-section">
+            <h3>基本信息</h3>
+            <div class="form-grid">
+              <label>应用名称<input name="name" required maxlength="30" placeholder="例如：教学设计助手"></label>
+              <label>应用分类<input name="category" required list="categoryOptions" placeholder="例如：教学支持"></label>
+              <datalist id="categoryOptions"></datalist>
+              <label>负责人<input name="owner" required placeholder="姓名 / 部门"></label>
+              <label>发布状态
+                <select name="status">
+                  <option value="published">已发布</option>
+                  <option value="draft">草稿</option>
+                  <option value="offline">已下架</option>
+                </select>
+              </label>
+            </div>
+            <label>应用简介<textarea name="description" required maxlength="120" placeholder="说明这个智能体能为师生解决什么问题"></textarea></label>
+          </section>
+
+          <section class="editor-section">
+            <h3>接入配置</h3>
+            <div class="mode-segments" id="modeSegments">
+              <label><input type="radio" name="mode" value="local" checked><span><i data-lucide="message-square"></i>平台对话</span></label>
+              <label><input type="radio" name="mode" value="external"><span><i data-lucide="external-link"></i>外部网页</span></label>
+              <label><input type="radio" name="mode" value="embed"><span><i data-lucide="panel-top"></i>网页嵌入</span></label>
+              <label><input type="radio" name="mode" value="api"><span><i data-lucide="braces"></i>API 接口</span></label>
+            </div>
+            <div class="connection-fields">
+              <label>Coze 发布页<input name="cozeUrl" type="url" placeholder="https://www.coze.cn/store/agent/..."></label>
+              <label data-mode-field="external embed">应用地址<input name="url" type="url" placeholder="https://agent.example.edu.cn"></label>
+              <label data-mode-field="api">模型网关接口<input name="apiUrl" type="url" placeholder="https://ai.njxzc.edu.cn/api/chat/stream"></label>
+              <label data-mode-field="api">服务端连接别名<input name="providerAlias" placeholder="例如：deepseek-teaching"><small>密钥由服务端管理员配置，前端不保存。</small></label>
+              <label data-mode-field="local">首选模型路由
+                <select name="routeHint">
+                  <option value="deepseek">DeepSeek · 教案与教学设计</option>
+                  <option value="kimi">Kimi · 长文本与 PDF</option>
+                  <option value="chatgpt">ChatGPT · PPT 与演示</option>
+                  <option value="coze">Coze Workflow · HTML 动画</option>
+                  <option value="gemini">Gemini · 图片理解</option>
+                  <option value="qwen">通义千问 · 中文通用</option>
+                  <option value="ernie">文心一言 · 政策知识</option>
+                </select>
+              </label>
+            </div>
+          </section>
+
+          <section class="editor-section">
+            <h3>对话引导</h3>
+            <label>系统提示词<textarea name="systemPrompt" maxlength="2000" placeholder="定义这个智能体的身份、能力边界、输出格式和校园场景要求"></textarea></label>
+            <label>推荐问题<textarea name="prompts" placeholder="每行一个推荐问题，最多 5 个"></textarea></label>
+          </section>
+        </div>
+
+        <aside class="editor-side">
+          <section class="editor-section logo-editor">
+            <h3>应用 Logo</h3>
+            <div class="logo-preview" id="logoPreview">智</div>
+            <label>Logo 文字<input name="logoText" maxlength="2" value="智"></label>
+            <label>图标名称<input name="icon" value="sparkles" placeholder="Lucide 图标名称"></label>
+            <label>品牌色<input name="color" type="color" value="#8b2332"></label>
+            <label class="upload-label">上传图片 Logo
+              <input id="logoUpload" type="file" accept="image/png,image/jpeg,image/webp,image/svg+xml">
+            </label>
+            <input name="logoImage" type="hidden">
+            <button class="link-button" id="clearLogoImage" type="button">移除上传图片</button>
+          </section>
+          <section class="editor-section">
+            <h3>发布检查</h3>
+            <ul class="publish-checklist">
+              <li><i data-lucide="check-circle-2"></i>名称与简介清晰</li>
+              <li><i data-lucide="check-circle-2"></i>Logo 可识别</li>
+              <li><i data-lucide="check-circle-2"></i>接入地址已验证</li>
+              <li><i data-lucide="check-circle-2"></i>负责人已确认</li>
+            </ul>
+          </section>
+        </aside>
+      </div>
+      <footer>
+        <button class="secondary-button" id="deleteAgent" type="button" hidden><i data-lucide="trash-2"></i>删除应用</button>
+        <span></span>
+        <button class="secondary-button" id="cancelEditor" type="button">取消</button>
+        <button class="primary-button" type="submit"><i data-lucide="save"></i>保存应用</button>
+      </footer>
+    </form>
+  </section>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>

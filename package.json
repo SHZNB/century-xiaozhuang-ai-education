@@ -1,0 +1,42 @@
+{
+  "name": "century-xiaozhuang-ai-education",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.0"
+  },
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server/index.mjs",
+    "check": "node scripts/acceptance-check.mjs && node scripts/runtime-check.mjs && node scripts/catalog-check.mjs && node scripts/agent-logo-assets.mjs && node scripts/coze-links-template.mjs && node scripts/env-check.mjs && node scripts/workflow-env-report.mjs && node scripts/operations-schedule.mjs && node scripts/permissions-matrix.mjs && node scripts/browser-secret-scan.mjs && node scripts/post-deploy-smoke.mjs && node --check app.js && node --check server/index.mjs && node --check server/auth.mjs && node --check server/catalog.mjs && node --check server/http-utils.mjs && node --check server/models.mjs && node --check server/store.mjs && node --check server/workflows.mjs && node --check scripts/agent-logo-assets.mjs && node --check scripts/browser-secret-scan.mjs && node --check scripts/build-pages.mjs && node --check scripts/catalog-check.mjs && node --check scripts/coze-links-template.mjs && node --check scripts/deploy-check.mjs && node --check scripts/env-check.mjs && node --check scripts/launch-package.mjs && node --check scripts/operations-schedule.mjs && node --check scripts/permissions-matrix.mjs && node --check scripts/post-deploy-smoke.mjs && node --check scripts/release-rehearsal.mjs && node --check scripts/runtime-check.mjs && node --check scripts/server-test.mjs && node --check scripts/verify.mjs && node --check scripts/workflow-env-report.mjs",
+    "logos:generate": "node scripts/agent-logo-assets.mjs --write",
+    "logos:check": "node scripts/agent-logo-assets.mjs",
+    "check:env": "node scripts/env-check.mjs",
+    "check:env:report": "node scripts/env-check.mjs --write",
+    "check:workflow-env": "node scripts/workflow-env-report.mjs",
+    "check:workflow-env:report": "node scripts/workflow-env-report.mjs --write",
+    "coze:template": "node scripts/coze-links-template.mjs",
+    "coze:template:report": "node scripts/coze-links-template.mjs --write",
+    "check:deploy": "node scripts/deploy-check.mjs",
+    "check:deploy:report": "node scripts/deploy-check.mjs --write",
+    "check:deploy:strict": "node scripts/deploy-check.mjs --strict",
+    "launch:package": "node scripts/launch-package.mjs",
+    "launch:package:report": "node scripts/launch-package.mjs --write",
+    "operations:schedule": "node scripts/operations-schedule.mjs",
+    "operations:schedule:report": "node scripts/operations-schedule.mjs --write",
+    "permissions:matrix": "node scripts/permissions-matrix.mjs",
+    "permissions:report": "node scripts/permissions-matrix.mjs --write",
+    "release:rehearsal": "node scripts/release-rehearsal.mjs",
+    "scan:browser-secrets": "node scripts/browser-secret-scan.mjs",
+    "smoke:post-deploy": "node scripts/post-deploy-smoke.mjs",
+    "smoke:post-deploy:report": "node scripts/post-deploy-smoke.mjs --write",
+    "build:pages": "node scripts/build-pages.mjs",
+    "test:server": "node scripts/server-test.mjs",
+    "test:e2e": "node scripts/verify.mjs",
+    "test": "npm run test:server && npm run test:e2e",
+    "acceptance": "node scripts/acceptance-check.mjs --write"
+  },
+  "devDependencies": {
+    "playwright": "1.60.0"
+  }
+}

@@ -1,0 +1,13 @@
+# 百年晓庄智慧教育平台每日数据目录备份定时器
+
+[Unit]
+Description=Run Century Xiaozhuang platform data backup daily
+
+[Timer]
+OnCalendar=*-*-* 02:20:00
+Persistent=true
+RandomizedDelaySec=20m
+Unit=xiaozhuang-platform-backup.service
+
+[Install]
+WantedBy=timers.target

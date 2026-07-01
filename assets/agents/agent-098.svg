@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-labelledby="title desc" data-agent-id="agent-098">
+  <title>资产管理助手 Logo</title>
+  <desc>治理决策 intelligent agent logo for 百年晓庄智慧教育平台</desc>
+  <rect width="128" height="128" rx="18" fill="#fae8e6"/>
+  <rect x="0" y="0" width="128" height="18" fill="#620b18"/>
+  <rect x="10" y="24" width="108" height="94" rx="14" fill="#fffaf2" opacity=".82"/>
+  <path d="M64 27 96 58 64 89 32 58Z" fill="none" stroke="#620b18" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".92"/>
+  <text x="64" y="77" text-anchor="middle" font-family="SimSun, STSong, serif" font-size="44" font-weight="800" fill="#620b18">资</text>
+  <text x="64" y="100" text-anchor="middle" font-family="Microsoft YaHei, Arial, sans-serif" font-size="10" font-weight="700" fill="#4a4138">治理决策</text>
+  <text x="64" y="116" text-anchor="middle" font-family="Arial, sans-serif" font-size="8" letter-spacing="1.4" fill="#8d8174">AGENT-098</text>
+</svg>
