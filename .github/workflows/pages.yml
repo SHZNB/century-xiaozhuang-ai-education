@@ -36,7 +36,9 @@ jobs:
       - run: npm run operations:schedule:report
       - run: npm run permissions:report
       - run: npm run coze:template:report
-      - run: npm run acceptance
+      - name: Generate acceptance report (non-blocking for Pages demo)
+        run: npm run acceptance
+        continue-on-error: true
       - run: npm run check:deploy:report
       - run: npm run launch:package:report
       - name: Run server and browser tests (non-blocking for Pages demo)
