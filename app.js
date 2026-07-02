@@ -3897,6 +3897,139 @@ function initHeroCarousel() {
   start();
 }
 
+const educationProjects = {
+  century: {
+    stage: "校庆课程项目",
+    title: "百年晓庄校史课程包",
+    summary: "围绕 1927-2027 校庆主题，把校史资料、陶行知教育思想、真实校园影像和课堂活动整合成可直接使用的教学资源。",
+    progress: "72%",
+    route: [
+      ["Kimi", "校史长文档"],
+      ["DeepSeek", "主题教案"],
+      ["ChatGPT", "PPT 讲稿"],
+      ["Coze", "互动展页"],
+      ["Gemini", "图片解读"]
+    ],
+    outputs: [
+      ["file-text", "百年晓庄主题教案", "Word", true],
+      ["presentation", "校史课堂 PPT 大纲", "PPT", true],
+      ["code-xml", "陶行知思想互动动画", "HTML", false],
+      ["folder-down", "校史素材资源包", "ZIP", false]
+    ]
+  },
+  teacher: {
+    stage: "教师成长项目",
+    title: "师范生课堂训练营",
+    summary: "面向师范生微格教学训练，自动生成说课稿、课堂脚本、评价量表和教学反思，支持反复迭代。",
+    progress: "64%",
+    route: [
+      ["DeepSeek", "说课与教案"],
+      ["ChatGPT", "展示课件"],
+      ["通义", "课堂问答"],
+      ["Gemini", "课堂图片"],
+      ["Kimi", "反思归档"]
+    ],
+    outputs: [
+      ["notebook-pen", "10 分钟微格教学稿", "DOCX", true],
+      ["list-checks", "课堂观察评价量表", "XLSX", true],
+      ["presentation", "说课展示课件", "PPT", false],
+      ["history", "教学反思记录", "PDF", false]
+    ]
+  },
+  research: {
+    stage: "科研申报项目",
+    title: "教育课题申报助手",
+    summary: "解析课题指南、形成选题建议、搭建研究框架，并把申报书、佐证材料和修改记录统一归档。",
+    progress: "58%",
+    route: [
+      ["Kimi", "指南解析"],
+      ["智谱 GLM", "政策知识"],
+      ["DeepSeek", "研究设计"],
+      ["ChatGPT", "汇报材料"],
+      ["混元", "备用服务"]
+    ],
+    outputs: [
+      ["file-search", "指南重点与选题建议", "MD", true],
+      ["file-text", "课题申报书初稿", "DOCX", false],
+      ["presentation", "立项汇报演示", "PPT", false],
+      ["database-backup", "申报材料归档", "ZIP", false]
+    ]
+  },
+  resource: {
+    stage: "资源建设项目",
+    title: "智慧课堂资源工坊",
+    summary: "把题库、学案、图片素材、PDF 资料和网页动画统一组织为课堂资源包，便于复用、分享和二次编辑。",
+    progress: "81%",
+    route: [
+      ["通义", "中文资源"],
+      ["豆包", "课堂活动"],
+      ["Gemini", "图片理解"],
+      ["Coze", "网页动画"],
+      ["ChatGPT", "资源说明"]
+    ],
+    outputs: [
+      ["list-checks", "分层练习题库", "JSON", true],
+      ["file-text", "学生学习任务单", "DOCX", true],
+      ["scan-eye", "图片素材解读", "MD", true],
+      ["code-xml", "课堂互动动画", "HTML", false]
+    ]
+  }
+};
+
+function renderProjectCommand(projectId = "century") {
+  if (!$("#projectList")) return;
+  const project = educationProjects[projectId] || educationProjects.century;
+  $$("#projectList .project-card").forEach(button => button.classList.toggle("active", button.dataset.project === projectId));
+  $("#projectStage").textContent = project.stage;
+  $("#projectTitle").textContent = project.title;
+  $("#projectSummary").textContent = project.summary;
+  $("#projectProgress").textContent = project.progress;
+  $("#projectRoute").innerHTML = project.route.map((item, index) => `
+    <div class="routing-step">
+      <i>${index + 1}</i>
+      <strong>${escapeHtml(item[0])}</strong>
+      <span>${escapeHtml(item[1])}</span>
+    </div>`).join("");
+  $("#projectOutputs").innerHTML = project.outputs.map(item => `
+    <div class="deliverable-item ${item[3] ? "is-done" : ""}">
+      <i data-lucide="${item[0]}"></i>
+      <span><strong>${escapeHtml(item[1])}</strong><small>${item[3] ? "已生成，可预览" : "排队生成中"}</small></span>
+      <b>${escapeHtml(item[2])}</b>
+    </div>`).join("");
+  refreshIcons();
+}
+
+function initProjectCommand() {
+  if (!$("#projectList")) return;
+  $$("#projectList .project-card").forEach(button => {
+    button.addEventListener("click", () => renderProjectCommand(button.dataset.project));
+  });
+  renderProjectCommand($("#projectList .project-card.active")?.dataset.project || "century");
+}
+
+function initDonationDialog() {
+  const dialog = $("#donationDialog");
+  if (!dialog) return;
+  const open = () => {
+    dialog.hidden = false;
+    refreshIcons();
+  };
+  const close = () => {
+    dialog.hidden = true;
+  };
+  $("#donationEntry")?.addEventListener("click", open);
+  $("#closeDonation")?.addEventListener("click", close);
+  dialog.addEventListener("click", event => {
+    if (event.target === dialog) close();
+  });
+  $$(".donation-options button, .donation-amounts button", dialog).forEach(button => {
+    button.addEventListener("click", () => {
+      $$("button", button.closest("div")).forEach(item => item.classList.remove("active"));
+      button.classList.add("active");
+    });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   const now = new Date();
   $("#dateLine").textContent = `${now.getFullYear()}年${now.getMonth() + 1}月${now.getDate()}日 · 星期${"日一二三四五六"[now.getDay()]}`;
@@ -3912,6 +4045,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   renderAlumni();
   refreshIcons();
   initHeroCarousel();
+  initProjectCommand();
+  initDonationDialog();
   await syncBranding();
   await connectPlatform();
   const ssoResult = new URLSearchParams(window.location.search);

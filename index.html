@@ -18,7 +18,7 @@
       <img data-brand-hero src="assets/xiaozhuang-century.png" alt="晓庄教育百年传承与智慧教育愿景">
       <div class="login-story-overlay"></div>
       <div class="brand brand-on-image">
-        <img class="school-mark" data-brand-logo src="assets/njxzc-seal.png" alt="">
+        <img class="school-mark sidebar-gold-mark" src="assets/gold-seal-clean.png" alt="南京晓庄学院">
         <span>
           <strong>南京晓庄学院</strong>
           <small>百年晓庄智慧教育平台</small>
@@ -110,7 +110,7 @@
       <nav class="main-nav" aria-label="主导航">
         <button class="nav-item active" data-view="home"><i data-lucide="layout-dashboard"></i><span>工作台</span></button>
         <button class="nav-item nav-ai" data-view="ai"><i data-lucide="sparkles"></i><span>AI 教育助手</span><b>AI</b></button>
-        <button class="nav-item" data-view="agents"><i data-lucide="blocks"></i><span>智能体中心</span></button>
+        <button class="nav-item" data-view="agents"><i data-lucide="blocks"></i><span>智能体矩阵广场</span></button>
         <button class="nav-item" data-view="favorites"><i data-lucide="star"></i><span>我的收藏</span></button>
         <button class="nav-item" data-view="artifacts"><i data-lucide="folder-down"></i><span>成果库</span></button>
         <button class="nav-item" data-view="history"><i data-lucide="history"></i><span>使用记录</span></button>
@@ -120,6 +120,7 @@
       <div class="sidebar-section">
         <p>平台服务</p>
         <button class="nav-item" data-view="alumni"><i data-lucide="badge-check"></i><span>校友认证</span></button>
+        <button class="nav-item" id="donationEntry" type="button"><i data-lucide="heart-handshake"></i><span>爱心捐赠</span></button>
         <button class="nav-item" data-view="guide"><i data-lucide="circle-help"></i><span>使用指南</span></button>
         <button class="nav-item" data-view="feedback"><i data-lucide="message-square-more"></i><span>意见反馈</span></button>
       </div>
@@ -231,10 +232,18 @@
             </aside>
             <div class="home-ai-stage">
               <header class="home-ai-top">
-                <div>
-                  <p class="eyebrow">AI + EDUCATION</p>
-                  <h2>准备好了，随时开始</h2>
-                </div>
+                <p class="eyebrow">AI + EDUCATION</p>
+                <h2>准备好了，随时开始</h2>
+                <p>输入一个教学任务，平台自动判断场景并路由到最合适的模型。</p>
+              </header>
+              <div class="home-ai-output-types" aria-label="输出类型">
+                <button><i data-lucide="file-text"></i>Word 教案</button>
+                <button><i data-lucide="presentation"></i>PPT 课件</button>
+                <button><i data-lucide="code-xml"></i>HTML 动画</button>
+                <button><i data-lucide="list-checks"></i>题目资源</button>
+              </div>
+              <div class="home-ai-modelbar">
+                <span><i data-lucide="route"></i>模型路由</span>
                 <select aria-label="选择模型">
                   <option>自动路由 · 推荐</option>
                   <option>Kimi · 长文本/PDF</option>
@@ -245,12 +254,6 @@
                   <option>通义千问 / 豆包 · 中文通用</option>
                   <option>文心一言 / 智谱 GLM · 政策知识</option>
                 </select>
-              </header>
-              <div class="home-ai-output-types" aria-label="输出类型">
-                <button><i data-lucide="file-text"></i>Word 教案</button>
-                <button><i data-lucide="presentation"></i>PPT 课件</button>
-                <button><i data-lucide="code-xml"></i>HTML 动画</button>
-                <button><i data-lucide="list-checks"></i>题目资源</button>
               </div>
               <div class="home-ai-composer">
                 <button class="icon-button" type="button" title="添加附件" aria-label="添加附件"><i data-lucide="plus"></i></button>
@@ -260,6 +263,58 @@
                 </div>
                 <button class="home-ai-send" type="button" title="发送" aria-label="发送"><i data-lucide="audio-lines"></i></button>
               </div>
+            </div>
+          </section>
+
+          <section class="project-command" aria-label="AI 教育项目中枢">
+            <div class="project-command-header">
+              <div>
+                <span class="section-tag">项目工作台</span>
+                <h2>AI 教育项目中枢</h2>
+                <p>把备课、资源、课件、评价和校友权益组织成可追踪的项目流程，适合预审演示和后续真实部署。</p>
+              </div>
+              <button class="secondary-button project-create" type="button" data-toast="Demo 已记录新建项目入口，正式版将进入项目创建向导">
+                <i data-lucide="plus"></i><span>新建项目</span>
+              </button>
+            </div>
+            <div class="project-board">
+              <div class="project-list" id="projectList" aria-label="教育项目列表">
+                <button class="project-card active" type="button" data-project="century">
+                  <strong>百年晓庄校史课程包</strong>
+                  <small>校史材料、陶行知思想、主题班会与课程资源</small>
+                  <span>校庆课程</span>
+                </button>
+                <button class="project-card" type="button" data-project="teacher">
+                  <strong>师范生课堂训练营</strong>
+                  <small>微格教学、说课稿、评价量表和反思报告</small>
+                  <span>教师成长</span>
+                </button>
+                <button class="project-card" type="button" data-project="research">
+                  <strong>教育课题申报助手</strong>
+                  <small>指南解读、选题论证、申报书与材料归档</small>
+                  <span>科研申报</span>
+                </button>
+                <button class="project-card" type="button" data-project="resource">
+                  <strong>智慧课堂资源工坊</strong>
+                  <small>题库、学案、图片理解、互动动画与课堂素材</small>
+                  <span>资源建设</span>
+                </button>
+              </div>
+              <div class="project-detail">
+                <div class="project-brief">
+                  <span id="projectStage">校庆课程项目</span>
+                  <h3 id="projectTitle">百年晓庄校史课程包</h3>
+                  <p id="projectSummary">围绕 1927-2027 校庆主题，把校史资料、陶行知教育思想、真实校园影像和课堂活动整合成可直接使用的教学资源。</p>
+                </div>
+                <div class="routing-map" id="projectRoute" aria-label="模型路由链路"></div>
+              </div>
+              <aside class="deliverable-panel" aria-label="项目产出文件流">
+                <header>
+                  <span>产出文件流</span>
+                  <b id="projectProgress">72%</b>
+                </header>
+                <div class="deliverable-stream" id="projectOutputs"></div>
+              </aside>
             </div>
           </section>
 
@@ -398,7 +453,7 @@
 
         <section class="view" id="view-agents">
           <div class="page-heading">
-            <div><p class="eyebrow">APPLICATION CENTER</p><h1>智能体中心</h1><p>汇聚校园智慧应用，为教学、学习、科研与管理提供支持。</p></div>
+            <div><p class="eyebrow">AGENT MATRIX SQUARE</p><h1>智能体矩阵广场</h1><p>汇聚校园智慧应用，为教学、学习、科研与管理提供支持。</p></div>
             <span class="agent-count" id="agentCount"></span>
           </div>
           <div class="filter-row" id="categoryFilters"></div>
@@ -777,6 +832,35 @@
   </div>
 
   <div class="drawer-backdrop" id="drawerBackdrop" hidden></div>
+  <section class="donation-dialog" id="donationDialog" role="dialog" aria-modal="true" aria-labelledby="donationTitle" hidden>
+    <div class="donation-card">
+      <button class="icon-button donation-close" id="closeDonation" type="button" aria-label="关闭爱心捐赠窗口"><i data-lucide="x"></i></button>
+      <div class="donation-visual">
+        <img src="assets/gold-seal-clean.png" alt="">
+        <span>1927-2027</span>
+      </div>
+      <div class="donation-copy">
+        <span class="section-tag">百年晓庄爱心捐赠</span>
+        <h2 id="donationTitle">共建智慧教育，共续晓庄荣光</h2>
+        <p>Demo 阶段展示捐赠入口与权益说明。正式上线后可接入学校基金会、校友会认证和支付/票据系统。</p>
+        <div class="donation-options" aria-label="捐赠用途">
+          <button type="button" class="active">AI 教育基金</button>
+          <button type="button">校友发展基金</button>
+          <button type="button">师范生支持计划</button>
+        </div>
+        <div class="donation-amounts" aria-label="捐赠金额">
+          <button type="button">￥100</button>
+          <button type="button" class="active">￥1927</button>
+          <button type="button">￥2027</button>
+          <button type="button">自定义</button>
+        </div>
+        <div class="donation-actions">
+          <button class="primary-button" type="button" data-toast="Demo 已记录捐赠意向，正式版将跳转至学校授权捐赠通道"><i data-lucide="heart-handshake"></i>提交捐赠意向</button>
+          <button class="secondary-button" type="button" data-view="alumni"><i data-lucide="badge-check"></i>先进行校友认证</button>
+        </div>
+      </div>
+    </div>
+  </section>
   <div class="agent-workspace" id="agentWorkspace" role="dialog" aria-modal="true" aria-labelledby="workspaceTitle" hidden>
     <header>
       <div class="workspace-agent">
