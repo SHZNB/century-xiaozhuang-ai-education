@@ -114,7 +114,7 @@
         <button class="nav-item" data-view="favorites"><i data-lucide="star"></i><span>我的收藏</span></button>
         <button class="nav-item" data-view="artifacts"><i data-lucide="folder-down"></i><span>成果库</span></button>
         <button class="nav-item" data-view="history"><i data-lucide="history"></i><span>使用记录</span></button>
-        <button class="nav-item admin-nav" data-view="management"><i data-lucide="settings-2"></i><span>应用管理</span></button>
+        <button class="nav-item admin-nav" data-view="management"><i data-lucide="shield-check"></i><span>管理员后台</span></button>
       </nav>
 
       <div class="sidebar-section">
@@ -498,22 +498,22 @@
         <section class="view" id="view-management">
           <div class="page-heading management-heading">
             <div>
-              <p class="eyebrow">AGENT OPERATIONS</p>
-              <h1>智能体应用管理</h1>
-              <p>维护应用目录、接入方式、发布状态和品牌标识。</p>
+              <p class="eyebrow">ADMIN CONSOLE</p>
+              <h1>管理员后台</h1>
+              <p>审核校园认证注册，维护智能体矩阵广场图标链接、接入方式、发布状态和品牌标识。</p>
             </div>
             <div class="management-actions">
-              <button class="secondary-button" id="importAgents"><i data-lucide="upload"></i>导入</button>
-              <button class="secondary-button" id="importCozeLinks"><i data-lucide="link"></i>Coze 链接</button>
-              <button class="secondary-button" id="exportCozeTemplate"><i data-lucide="file-spreadsheet"></i>Coze 模板</button>
+              <button class="secondary-button" id="importAgents" data-agent-admin-only><i data-lucide="upload"></i>导入</button>
+              <button class="secondary-button" id="importCozeLinks" data-agent-admin-only><i data-lucide="link"></i>批量图标链接</button>
+              <button class="secondary-button" id="exportCozeTemplate" data-agent-admin-only><i data-lucide="file-spreadsheet"></i>链接模板</button>
               <button class="secondary-button" id="exportAgentQuality" data-super-only title="导出智能体目录质量整改台账"><i data-lucide="clipboard-check"></i>质量台账</button>
-              <button class="secondary-button" id="exportVisibleAgents" title="只导出当前筛选和排序后的可见智能体"><i data-lucide="list-filter"></i>导出当前</button>
-              <button class="secondary-button" id="exportAgents" title="优先导出已勾选，其次导出当前筛选结果"><i data-lucide="download"></i>导出</button>
+              <button class="secondary-button" id="exportVisibleAgents" data-agent-admin-only title="只导出当前筛选和排序后的可见智能体"><i data-lucide="list-filter"></i>导出当前</button>
+              <button class="secondary-button" id="exportAgents" data-agent-admin-only title="优先导出已勾选，其次导出当前筛选结果"><i data-lucide="download"></i>导出</button>
               <button class="secondary-button" id="backupPlatform" data-super-only><i data-lucide="database-backup"></i>备份</button>
               <button class="secondary-button" id="restorePlatform" data-super-only><i data-lucide="database-zap"></i>恢复</button>
               <button class="secondary-button" id="runMaintenance" data-super-only><i data-lucide="wrench"></i>运行维护</button>
               <button class="secondary-button" id="resetCatalog" data-super-only><i data-lucide="rotate-ccw"></i>默认目录</button>
-              <button class="primary-button" id="createAgent"><i data-lucide="plus"></i>新建智能体</button>
+              <button class="primary-button" id="createAgent" data-agent-admin-only><i data-lucide="plus"></i>新建智能体</button>
               <input id="importFile" type="file" accept="application/json" hidden>
               <input id="cozeLinksFile" type="file" accept=".json,.csv,application/json,text/csv" hidden>
               <input id="restoreFile" type="file" accept="application/json" hidden>
@@ -552,7 +552,7 @@
               <option value="route-asc">模型路由</option>
               <option value="test-asc">测试状态</option>
             </select>
-            <div class="bulk-actions" aria-label="批量操作">
+            <div class="bulk-actions" aria-label="批量操作" data-agent-admin-only>
               <label class="check-control"><input id="selectVisibleAgents" type="checkbox"><span>全选当前</span></label>
               <button class="secondary-button" data-bulk-agent-status="published"><i data-lucide="circle-play"></i>发布</button>
               <button class="secondary-button" data-bulk-agent-status="draft"><i data-lucide="file-pen-line"></i>转草稿</button>
@@ -572,7 +572,7 @@
             </div>
           </div>
           <div class="management-table" id="managementTable"></div>
-          <section class="operations-panel workflow-ops">
+          <section class="operations-panel workflow-ops" data-agent-admin-only>
             <div class="section-heading compact">
               <div><p class="eyebrow">TEACHING WORKFLOWS</p><h2>教学工作流管理</h2></div>
               <div class="inline-actions">
@@ -716,7 +716,7 @@
                 <button class="secondary-button wide" type="submit"><i data-lucide="save"></i>保存品牌配置</button>
               </form>
             </section>
-            <section class="operations-panel">
+            <section class="operations-panel" data-agent-admin-only>
               <div class="section-heading compact"><div><p class="eyebrow">MODEL ROUTING</p><h2>模型路由状态</h2></div><div class="inline-actions"><span>密钥仅由服务端保存</span><button class="text-button" id="exportProviders" type="button" data-super-only><i data-lucide="download"></i>导出配置</button><button class="text-button" id="bulkProviderTest" type="button"><i data-lucide="flask-conical"></i>测试已配置</button></div></div>
               <div class="provider-toolbar">
                 <div class="global-search provider-search">
@@ -739,13 +739,13 @@
               <div class="provider-list" id="providerList"></div>
             </section>
             <section class="operations-panel">
-              <div class="section-heading compact"><div><p class="eyebrow">ALUMNI REVIEW</p><h2>校友认证审核</h2></div><div class="inline-actions"><span id="reviewCount">0 项待处理</span><button class="text-button" id="exportAlumni" type="button" data-super-only><i data-lucide="download"></i>导出认证</button></div></div>
+              <div class="section-heading compact"><div><p class="eyebrow">CAMPUS VERIFY</p><h2>校园认证注册审核</h2><p>统一处理校友、教师和校园身份认证申请；通过后按规则发放免费 Token。</p></div><div class="inline-actions"><span id="reviewCount">0 项待处理</span><button class="text-button" id="exportAlumni" type="button" data-super-only><i data-lucide="download"></i>导出认证</button></div></div>
               <div class="alumni-review-toolbar">
                 <div class="global-search alumni-review-search">
                   <i data-lucide="search"></i>
-                  <input id="alumniReviewSearch" type="search" placeholder="搜索姓名、年份、院系、专业或联系方式" aria-label="搜索校友认证">
+                  <input id="alumniReviewSearch" type="search" placeholder="搜索姓名、年份、院系、专业或联系方式" aria-label="搜索校园认证">
                 </div>
-                <select id="alumniReviewStatus" aria-label="按校友认证状态筛选">
+                <select id="alumniReviewStatus" aria-label="按校园认证状态筛选">
                   <option value="pending">待审核</option>
                   <option value="all">全部状态</option>
                   <option value="approved">已通过</option>
@@ -922,7 +922,7 @@
               <label><input type="radio" name="mode" value="api"><span><i data-lucide="braces"></i>API 接口</span></label>
             </div>
             <div class="connection-fields">
-              <label>Coze 发布页<input name="cozeUrl" type="url" placeholder="https://www.coze.cn/store/agent/..."></label>
+              <label>图标超链接 / Coze 发布页<input name="cozeUrl" type="url" placeholder="https://www.coze.cn/store/agent/..."><small>填写后，智能体矩阵广场中的图标会直接跳转到该发布页。</small></label>
               <label data-mode-field="external embed">应用地址<input name="url" type="url" placeholder="https://agent.example.edu.cn"></label>
               <label data-mode-field="api">模型网关接口<input name="apiUrl" type="url" placeholder="https://ai.njxzc.edu.cn/api/chat/stream"></label>
               <label data-mode-field="api">服务端连接别名<input name="providerAlias" placeholder="例如：deepseek-teaching"><small>密钥由服务端管理员配置，前端不保存。</small></label>

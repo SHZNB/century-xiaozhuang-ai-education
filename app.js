@@ -392,11 +392,25 @@ async function syncServerState() {
 
 function applyRoleVisibility() {
   const role = state.currentUser?.role;
+  const canOpenAdminConsole = ["super_admin", "agent_admin", "alumni_reviewer"].includes(role);
   const canManageApplications = ["super_admin", "agent_admin"].includes(role);
-  $$(".admin-nav").forEach(element => element.hidden = state.serverMode && !canManageApplications);
+  $$(".admin-nav").forEach(element => element.hidden = state.serverMode && !canOpenAdminConsole);
+  $$("[data-agent-admin-only]").forEach(element => {
+    element.hidden = state.serverMode && !canManageApplications;
+  });
   $$("[data-super-only]").forEach(element => {
     element.hidden = state.serverMode && role !== "super_admin";
   });
+}
+
+function hasAdminConsoleAccess() {
+  if (state.serverMode) return ["super_admin", "agent_admin", "alumni_reviewer"].includes(state.currentUser?.role);
+  return Boolean(state.currentUser?.role || sessionStorage.getItem(STORAGE.session) || localStorage.getItem(STORAGE.remember));
+}
+
+function canManageAgentCatalog() {
+  if (state.serverMode) return ["super_admin", "agent_admin"].includes(state.currentUser?.role);
+  return hasAdminConsoleAccess();
 }
 
 async function syncAdminData() {
@@ -2389,7 +2403,7 @@ function renderManagement() {
     ${visible.map(agent => `
       <div class="management-row">
         <label class="row-check"><input type="checkbox" data-select-agent="${agent.id}" ${state.selectedAgentIds.has(agent.id) ? "checked" : ""} aria-label="选择 ${escapeHtml(agent.name)}"></label>
-        <div class="management-agent">${logoMarkup(agent, "small")}<span><strong>${escapeHtml(agent.name)}</strong><small>${escapeHtml(agent.id)} · ${escapeHtml(agentQualityLabel(agent))}</small></span></div>
+        <div class="management-agent">${logoMarkup(agent, "small")}<span><strong>${escapeHtml(agent.name)}</strong><small>${escapeHtml(agent.id)} · ${escapeHtml(agentQualityLabel(agent))}</small><small class="${agentCozeUrl(agent) ? "link-status ready" : "link-status missing"}">${agentCozeUrl(agent) ? "图标链接已设置" : "待添加图标链接"}</small></span></div>
         <span><strong>${escapeHtml(agent.category)}</strong><small>${escapeHtml(agent.owner)}</small></span>
         <span class="mode-badge"><i data-lucide="${agent.mode === "api" ? "braces" : agent.mode === "embed" ? "panel-top" : agent.mode === "external" ? "external-link" : "message-square"}"></i>${modeLabel(agent.mode)}<small>${connectionTestLabel(agent)}</small></span>
         <span><b class="status-badge ${agent.status}">${statusLabel(agent.status)}</b>${agentPublishGateLabel(agent) ? `<small>${escapeHtml(agentPublishGateLabel(agent))}</small>` : ""}</span>
@@ -2397,6 +2411,7 @@ function renderManagement() {
           <button class="icon-button" data-test-agent="${agent.id}" title="测试" aria-label="测试 ${escapeHtml(agent.name)}"><i data-lucide="flask-conical"></i></button>
           <button class="icon-button" data-duplicate-agent="${agent.id}" title="复制" aria-label="复制 ${escapeHtml(agent.name)}"><i data-lucide="copy-plus"></i></button>
           <button class="icon-button" data-agent-versions="${agent.id}" title="版本记录" aria-label="查看 ${escapeHtml(agent.name)} 版本"><i data-lucide="history"></i></button>
+          <button class="icon-button" data-agent-admin-only data-edit-agent-link="${agent.id}" title="编辑图标超链接" aria-label="编辑 ${escapeHtml(agent.name)} 图标超链接"><i data-lucide="link"></i></button>
           <button class="icon-button" data-edit-agent="${agent.id}" title="编辑" aria-label="编辑 ${escapeHtml(agent.name)}"><i data-lucide="pencil"></i></button>
           <button class="icon-button" data-toggle-agent="${agent.id}" title="${agent.status === "published" ? "下架" : "发布"}" aria-label="${agent.status === "published" ? "下架" : "发布"} ${escapeHtml(agent.name)}"><i data-lucide="${agent.status === "published" ? "circle-pause" : "circle-play"}"></i></button>
         </span>
@@ -2410,6 +2425,7 @@ function renderManagement() {
     $("#selectedAgentCount").textContent = `${selectedTotal} 已选`;
   }
   renderWorkflowManagement();
+  applyRoleVisibility();
   refreshIcons();
 }
 
@@ -3481,6 +3497,40 @@ async function toggleAgentStatus(id) {
   showToast("发布状态已更新");
 }
 
+async function editAgentIconLink(id) {
+  if (!canManageAgentCatalog()) {
+    showToast("当前账号没有维护智能体图标链接的权限");
+    return;
+  }
+  const existing = agents.find(agent => agent.id === id);
+  if (!existing) return;
+  const value = window.prompt(`设置“${existing.name}”图标超链接。留空可清除当前链接。`, existing.cozeUrl || "");
+  if (value === null) return;
+  const cozeUrl = value.trim();
+  if (cozeUrl && !/^https?:\/\//i.test(cozeUrl)) {
+    showToast("请输入以 http:// 或 https:// 开头的链接");
+    return;
+  }
+  const updated = { ...existing, cozeUrl, updatedAt: new Date().toISOString().slice(0, 10) };
+  if (state.serverMode) {
+    try {
+      const result = await api(`/api/admin/agents/${encodeURIComponent(id)}`, {
+        method: "PUT",
+        body: JSON.stringify(updated)
+      });
+      agents = agents.map(agent => agent.id === id ? result.agent : agent);
+    } catch (error) {
+      showToast(error.message);
+      return;
+    }
+  } else {
+    agents = agents.map(agent => agent.id === id ? updated : agent);
+  }
+  saveAgents();
+  renderAll();
+  showToast(cozeUrl ? "图标超链接已更新" : "图标超链接已清除");
+}
+
 async function duplicateAgent(id) {
   const existing = agents.find(agent => agent.id === id);
   if (!existing) return;
@@ -4056,7 +4106,11 @@ document.addEventListener("DOMContentLoaded", async () => {
   } else if (ssoResult.get("sso") === "ok") {
     history.replaceState({}, "", location.pathname);
   }
-  if (!state.apiAvailable && (sessionStorage.getItem(STORAGE.session) || localStorage.getItem(STORAGE.remember))) login();
+  if (!state.apiAvailable && (sessionStorage.getItem(STORAGE.session) || localStorage.getItem(STORAGE.remember))) {
+    state.currentUser = { id: "local-admin", username: "xz2026", displayName: "Demo 管理员", role: "super_admin" };
+    login();
+    applyRoleVisibility();
+  }
 
   $("#loginForm").addEventListener("submit", async event => {
     event.preventDefault();
@@ -4092,9 +4146,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
     $("#loginError").textContent = "";
+    state.currentUser = { id: "local-admin", username: "xz2026", displayName: "Demo 管理员", role: "super_admin" };
     sessionStorage.setItem(STORAGE.session, "active");
     if ($("#rememberMe").checked) localStorage.setItem(STORAGE.remember, "active");
     login();
+    applyRoleVisibility();
   });
 
   $("#passwordToggle").addEventListener("click", () => {
@@ -4125,6 +4181,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const toastButton = event.target.closest("[data-toast]");
     const promptButton = event.target.closest("[data-prompt]");
     const editButton = event.target.closest("[data-edit-agent]");
+    const editAgentLinkButton = event.target.closest("[data-edit-agent-link]");
     const toggleButton = event.target.closest("[data-toggle-agent]");
     const testAgentButton = event.target.closest("[data-test-agent]");
     const duplicateAgentButton = event.target.closest("[data-duplicate-agent]");
@@ -4155,7 +4212,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const deleteArtifactButton = event.target.closest("[data-delete-artifact]");
     if (viewButton) {
       const protectedViews = new Set(["management"]);
-      if (protectedViews.has(viewButton.dataset.view) && !state.serverMode) {
+      if (protectedViews.has(viewButton.dataset.view) && !hasAdminConsoleAccess()) {
         showLoginPrompt("应用管理需要登录后使用。Demo 账号：xz2026 / xz2026");
       } else {
         setView(viewButton.dataset.view);
@@ -4173,10 +4230,20 @@ document.addEventListener("DOMContentLoaded", async () => {
       $("#chatInput").value = promptButton.dataset.prompt;
       $("#chatInput").focus();
     }
-    if (editButton) openEditor(editButton.dataset.editAgent);
-    if (toggleButton) toggleAgentStatus(toggleButton.dataset.toggleAgent);
+    if (editAgentLinkButton) editAgentIconLink(editAgentLinkButton.dataset.editAgentLink);
+    if (editButton) {
+      if (!canManageAgentCatalog()) showToast("当前账号没有编辑智能体目录的权限");
+      else openEditor(editButton.dataset.editAgent);
+    }
+    if (toggleButton) {
+      if (!canManageAgentCatalog()) showToast("当前账号没有发布或下架智能体的权限");
+      else toggleAgentStatus(toggleButton.dataset.toggleAgent);
+    }
     if (testAgentButton) testAgent(testAgentButton.dataset.testAgent);
-    if (duplicateAgentButton) duplicateAgent(duplicateAgentButton.dataset.duplicateAgent);
+    if (duplicateAgentButton) {
+      if (!canManageAgentCatalog()) showToast("当前账号没有复制智能体的权限");
+      else duplicateAgent(duplicateAgentButton.dataset.duplicateAgent);
+    }
     if (agentVersionsButton) showAgentVersions(agentVersionsButton.dataset.agentVersions);
     if (selectAgentCheckbox) toggleAgentSelection(selectAgentCheckbox.dataset.selectAgent, selectAgentCheckbox.checked);
     if (selectWorkflowCheckbox) toggleWorkflowSelection(selectWorkflowCheckbox.dataset.selectWorkflow, selectWorkflowCheckbox.checked);

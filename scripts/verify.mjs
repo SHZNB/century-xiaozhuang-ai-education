@@ -53,7 +53,7 @@ try {
     await openManagement(page);
   }
   await page.locator("#view-management.active").waitFor();
-  await page.getByRole("heading", { name: "智能体应用管理" }).waitFor();
+  await page.getByRole("heading", { name: "管理员后台" }).waitFor();
   await page.screenshot({ path: path.join(screenshotDir, "dashboard-desktop.png"), fullPage: true });
   await page.getByText("100", { exact: true }).first().waitFor();
   await page.locator("#managementTestStatus").waitFor({ state: "visible" });
@@ -181,7 +181,7 @@ try {
   });
   await page.getByRole("button", { name: "提交认证申请" }).click();
   await page.getByText("审核中").waitFor();
-  await page.getByRole("button", { name: "应用管理" }).click();
+  await page.getByRole("button", { name: "管理员后台" }).click();
   const proofLink = page.getByRole("link", { name: "查看证明" });
   await proofLink.waitFor();
   const proofHref = await proofLink.getAttribute("href");
